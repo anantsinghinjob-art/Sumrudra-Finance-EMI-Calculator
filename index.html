@@ -45,6 +45,8 @@ input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
 .emi-result{margin-top:12px;padding:14px;border-radius:13px;background:#eef6ff;border-left:5px solid var(--blue);font-size:14px}.emi-result strong{font-size:21px;color:var(--blue)}
 @media(max-width:650px){.nav{grid-template-columns:repeat(3,1fr)}.tab{font-size:10px;padding:8px 3px}}
 
+.elig-loan-box{margin-top:18px;padding:20px;border:1px solid #d9e4f2;border-radius:18px;background:linear-gradient(180deg,#f8fbff,#ffffff);box-shadow:0 10px 28px rgba(10,55,100,.07)}
+.elig-loan-box h3{margin:0 0 7px;color:#0b1f3a;font-size:18px}.elig-loan-box .sub{margin-bottom:14px}.elig-loan-box .result{margin-top:14px}.elig-loan-box .input-error{margin-top:6px}
 .input-error{display:none;margin-top:7px;padding:8px 10px;border-radius:9px;background:#fff0f0;color:#d51f2a;font-size:12px;font-weight:700;border:1px solid #ffc9cc}
 .input-error.show{display:block}
 .field.invalid .inputwrap{border-color:#e5232d;box-shadow:0 0 0 3px #e5232d18}
@@ -95,79 +97,956 @@ body{background:radial-gradient(circle at 20% 0%,#eef6ff 0,#f7f9fc 38%,#eef2f8 1
 @media(max-width:650px){.benefit-grid{grid-template-columns:1fr}.benefit{min-height:auto}}
 
 
-/* Dedicated calculator views */
-.calc-page-view{display:none;min-height:100vh;background:linear-gradient(180deg,#f7fbff 0%,#eef5fc 100%);padding:18px 14px 50px}
-.calc-page-view.active{display:block;animation:pageIn .25s ease}
-@keyframes pageIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-.calc-page-inner{max-width:1080px;margin:0 auto}
-.calc-back{display:inline-flex;align-items:center;gap:8px;border:1px solid #d3dfed;background:#fff;color:#0757c8;padding:10px 16px;border-radius:12px;font-weight:900;cursor:pointer;box-shadow:0 5px 14px #173a6514;margin-bottom:16px}
-.calc-page-title{font-size:clamp(25px,4vw,40px);font-weight:950;color:#10243d;margin:4px 0 5px}
-.calc-page-sub{color:#64748b;margin:0 0 18px;line-height:1.5}
-.calc-page-content{background:#fff;border:1px solid #dbe5f0;border-radius:22px;box-shadow:0 14px 40px #173a6517;padding:18px}
-.calc-contact{margin-top:22px;padding:18px;border-radius:18px;background:linear-gradient(135deg,#0757c8,#123f83);color:#fff;display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap}
-.calc-contact strong{font-size:18px}
-.calc-contact small{display:block;opacity:.9;margin-top:4px}
-.calc-contact-actions{display:flex;gap:9px;flex-wrap:wrap}
-.calc-contact a{color:#10243d;background:#fff;text-decoration:none;padding:10px 14px;border-radius:11px;font-weight:900}
-.contact-section{padding:70px 16px}
-.contact-card{max-width:1050px;margin:auto;border-radius:26px;padding:30px;background:linear-gradient(135deg,#0b58c9,#173c79);color:#fff;box-shadow:0 20px 50px #173a6530;display:flex;justify-content:space-between;align-items:center;gap:25px;flex-wrap:wrap}
-.contact-card h2{margin:0 0 8px;font-size:clamp(25px,4vw,38px)}
-.contact-card p{margin:0;color:#e8f1ff;line-height:1.6}
-.contact-numbers{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
-.contact-numbers a{color:#fff;text-decoration:none;font-weight:900}
-.contact-buttons{display:flex;gap:10px;flex-wrap:wrap}
-.contact-buttons a{background:#fff;color:#123f83;text-decoration:none;padding:12px 16px;border-radius:12px;font-weight:950}
-@media(max-width:650px){
-  .calc-page-view{padding:12px 9px 35px}
-  .calc-page-content{padding:12px;border-radius:18px}
-  .calc-page-title{font-size:25px}
-  .calc-back{margin-bottom:12px}
-  .contact-card{padding:22px}
+/* Contact / support */
+.sf-contact{padding:0 0 70px}
+.sf-contact-card{max-width:1080px;margin:0 auto;padding:28px;border-radius:24px;background:linear-gradient(135deg,#0757c8,#173c79);color:#fff;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;box-shadow:0 18px 45px #173a6530}
+.sf-contact-card h2{margin:0 0 8px;font-size:clamp(25px,4vw,38px)}
+.sf-contact-card p{margin:0;color:#e7f0ff;line-height:1.55}
+.sf-contact-numbers{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.sf-contact-numbers a,.sf-contact-actions a{color:#123b78;text-decoration:none;background:#fff;padding:11px 15px;border-radius:12px;font-weight:950;display:inline-block}
+.sf-contact-actions{display:flex;gap:10px;flex-wrap:wrap}
+@media(max-width:650px){.sf-contact{padding-bottom:50px}.sf-contact-card{padding:22px}.sf-contact-actions{width:100%}.sf-contact-actions a{flex:1;text-align:center}}
+
+
+/* Route-style calculator pages: original calculator UI, presented as separate full-page views. */
+body.calculator-open #sfHome{display:none!important}
+body.calculator-open .header{display:block!important}
+body.calculator-open #app{display:block!important}
+body:not(.calculator-open) .header,body:not(.calculator-open) #app{display:none!important}
+body.calculator-open #calculatorView{display:block!important;min-height:100vh}
+body.calculator-open #landingPage{display:none!important}
+body.calculator-open .calc-panel{display:none!important}
+body.calculator-open .calc-panel.active{display:block!important}
+
+
+/* ===== 6-second 3D Digital Lending Intro ===== */
+#sfIntroSplash{
+  position:fixed;inset:0;z-index:99999;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  background:
+    radial-gradient(circle at 18% 35%,rgba(255,25,55,.42),transparent 32%),
+    radial-gradient(circle at 82% 65%,rgba(0,100,255,.48),transparent 36%),
+    linear-gradient(125deg,#070b25 0%,#071f64 42%,#4a082f 100%);
+  color:#fff;
+  transition:opacity .75s ease,visibility .75s ease;
+}
+#sfIntroSplash.sf-intro-hide{opacity:0;visibility:hidden;pointer-events:none}
+.sf-intro-glow{
+  position:absolute;width:65vw;height:65vw;max-width:700px;max-height:700px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(35,112,255,.20),rgba(255,0,62,.07) 42%,transparent 70%);
+  filter:blur(8px);animation:sfPulse 2.7s ease-in-out infinite;
+}
+.sf-intro-grid{
+  position:absolute;inset:-50%;
+  background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+  background-size:42px 42px;transform:perspective(650px) rotateX(63deg);
+  transform-origin:center;animation:sfGrid 7s linear infinite;
+}
+.sf-intro-scene{
+  position:relative;width:min(92vw,760px);height:min(82vh,680px);
+  display:flex;align-items:center;justify-content:center;
+  perspective:1100px;
+}
+.sf-intro-core{
+  position:relative;z-index:5;text-align:center;
+  transform:translateZ(70px);
+  animation:sfCoreIn 1.3s cubic-bezier(.2,.8,.2,1) both;
+}
+.sf-intro-core .mini{
+  font-size:clamp(10px,1.6vw,14px);letter-spacing:.34em;text-transform:uppercase;
+  color:#bcd9ff;font-weight:800;margin-bottom:14px;
+}
+.sf-intro-brand{
+  font-size:clamp(36px,8vw,78px);line-height:.95;font-weight:1000;
+  letter-spacing:-.055em;text-transform:uppercase;
+  text-shadow:0 8px 35px rgba(0,0,0,.38),0 0 35px rgba(39,128,255,.18);
+}
+.sf-intro-brand .red{color:#ff3150}
+.sf-intro-brand .blue{color:#f4f8ff}
+.sf-intro-welcome{
+  margin-top:19px;font-size:clamp(16px,3vw,29px);font-weight:850;
+  letter-spacing:.02em;color:#fff;
+}
+.sf-intro-sub{
+  margin-top:10px;font-size:clamp(11px,1.8vw,15px);color:#c8d9f2;
+  letter-spacing:.12em;text-transform:uppercase;
+}
+.sf-orbit{
+  position:absolute;inset:9% 6%;transform-style:preserve-3d;
+  animation:sfOrbit 6s linear infinite;
+}
+.sf-orbit::before,.sf-orbit::after{
+  content:"";position:absolute;left:50%;top:50%;
+  border:2px solid rgba(78,163,255,.58);border-radius:50%;
+  transform-style:preserve-3d;
+  box-shadow:0 0 28px rgba(26,119,255,.25),inset 0 0 22px rgba(255,35,70,.10);
+}
+.sf-orbit::before{width:75%;height:32%;margin:-16% 0 0 -37.5%;transform:rotateX(68deg)}
+.sf-orbit::after{width:65%;height:26%;margin:-13% 0 0 -32.5%;transform:rotateX(68deg) rotateZ(78deg);border-color:rgba(255,54,81,.46)}
+.sf-product{
+  position:absolute;left:50%;top:50%;transform-style:preserve-3d;
+  transform:rotateY(var(--a)) translateZ(clamp(190px,28vw,310px)) rotateY(calc(var(--a) * -1));
+}
+.sf-product:nth-child(1){--a:0deg}
+.sf-product:nth-child(2){--a:45deg}
+.sf-product:nth-child(3){--a:90deg}
+.sf-product:nth-child(4){--a:135deg}
+.sf-product:nth-child(5){--a:180deg}
+.sf-product:nth-child(6){--a:225deg}
+.sf-product:nth-child(7){--a:270deg}
+.sf-product:nth-child(8){--a:315deg}
+.sf-product span{
+  display:block;white-space:nowrap;padding:9px 15px;border-radius:999px;
+  background:linear-gradient(135deg,rgba(255,255,255,.18),rgba(255,255,255,.06));
+  border:1px solid rgba(255,255,255,.25);backdrop-filter:blur(10px);
+  font-size:clamp(10px,1.7vw,14px);font-weight:950;letter-spacing:.035em;
+  box-shadow:0 10px 25px rgba(0,0,0,.18);text-shadow:0 2px 8px #0005;
+}
+.sf-intro-ring{
+  position:absolute;inset:14% 9%;border:1px solid rgba(255,255,255,.13);
+  border-radius:50%;transform:rotateX(67deg) rotateZ(-8deg);
+  box-shadow:0 0 55px rgba(0,90,255,.13);
+}
+.sf-intro-progress{
+  position:absolute;bottom:8%;left:50%;transform:translateX(-50%);
+  width:min(260px,65vw);height:3px;background:rgba(255,255,255,.16);overflow:hidden;border-radius:99px;
+}
+.sf-intro-progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,#ff2448,#2b91ff);animation:sfProgress 6s linear forwards}
+.sf-intro-loading{
+  position:absolute;bottom:5%;left:0;right:0;text-align:center;
+  font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#9fb9dd;
+}
+@keyframes sfOrbit{from{transform:rotateZ(-8deg) rotateY(0deg)}to{transform:rotateZ(-8deg) rotateY(360deg)}}
+@keyframes sfPulse{0%,100%{transform:scale(.92);opacity:.65}50%{transform:scale(1.06);opacity:1}}
+@keyframes sfGrid{from{transform:perspective(650px) rotateX(63deg) translateY(0)}to{transform:perspective(650px) rotateX(63deg) translateY(42px)}}
+@keyframes sfCoreIn{from{opacity:0;transform:translateZ(0) scale(.82)}to{opacity:1;transform:translateZ(70px) scale(1)}}
+@keyframes sfProgress{to{width:100%}}
+@media(max-width:600px){
+  .sf-intro-scene{height:78vh}
+  .sf-orbit{inset:18% -10%}
+  .sf-product span{padding:7px 10px}
+  .sf-product{transform:rotateY(var(--a)) translateZ(190px) rotateY(calc(var(--a) * -1))}
+}
+@media(prefers-reduced-motion:reduce){
+  .sf-orbit,.sf-intro-glow,.sf-intro-grid,.sf-intro-core,.sf-intro-progress i{animation:none!important}
+  .sf-intro-progress i{width:100%}
 }
 
 
-/* Calculator mode: one calculator at a time, no page scrolling back to the intro */
-body.calculator-mode{background:var(--bg)}
-body.calculator-mode .sf-site,
-body.calculator-mode .header{display:none!important}
-body.calculator-mode #app{display:block!important;padding:0}
-#app{display:none}
-#calculatorView{min-height:100vh;background:linear-gradient(180deg,#f6faff 0%,#edf5fd 100%);padding:18px 12px 50px}
-#calculatorView.active{display:block}
-#calculatorView .backbar{max-width:1080px;margin:0 auto 14px}
-#calculatorView .view-title{max-width:1080px;margin:0 auto 15px;font-size:clamp(25px,4vw,40px);font-weight:950}
-#calculatorView .calc-panel{max-width:1080px;margin:0 auto}
-#calculatorView .calc-panel.active{display:block}
-#calculatorView .calc-panel:not(.active){display:none}
-#calculatorView .back-btn{min-height:44px;font-weight:900;cursor:pointer}
-#calculatorView .calculator-contact{max-width:1080px;margin:20px auto 0;padding:20px;border-radius:20px;background:linear-gradient(135deg,#0757c8,#123f83);color:#fff;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
-#calculatorView .calculator-contact h3{margin:0 0 5px;font-size:20px}
-#calculatorView .calculator-contact p{margin:0;opacity:.9}
-#calculatorView .calculator-contact-actions{display:flex;gap:9px;flex-wrap:wrap}
-#calculatorView .calculator-contact-actions a{display:inline-flex;align-items:center;min-height:44px;padding:10px 14px;border-radius:11px;background:#fff;color:#123f83;text-decoration:none;font-weight:900}
-.sf-short,.sf-btn{font:inherit;cursor:pointer}
-.sf-contact{padding:0 16px 70px}
-.sf-contact-inner{max-width:1050px;margin:auto;padding:30px;border-radius:26px;background:linear-gradient(135deg,#0b58c9,#173c79);color:#fff;box-shadow:0 20px 50px #173a6530;display:flex;justify-content:space-between;align-items:center;gap:25px;flex-wrap:wrap}
-.sf-contact h2{margin:4px 0 8px;font-size:clamp(25px,4vw,38px)}
-.sf-contact p{margin:0;color:#e8f1ff;line-height:1.6;max-width:650px}
-.sf-contact-numbers{display:flex;gap:15px;flex-wrap:wrap;margin-top:14px}
-.sf-contact-numbers a{color:#fff;text-decoration:none;font-weight:900}
-.sf-contact-actions{display:flex;gap:10px;flex-wrap:wrap}
-.sf-contact-actions a{background:#fff;color:#123f83;text-decoration:none;padding:12px 17px;border-radius:12px;font-weight:950}
-@media(max-width:650px){
-  #calculatorView{padding:12px 9px 35px}
-  #calculatorView .view-title{font-size:25px}
-  #calculatorView .calculator-contact{padding:18px;border-radius:18px}
-  #calculatorView .calculator-contact-actions a{width:100%;justify-content:center}
-  .sf-contact{padding:0 12px 55px}
-  .sf-contact-inner{padding:22px;border-radius:20px}
-  .sf-contact-actions{width:100%}
-  .sf-contact-actions a{flex:1;text-align:center}
+/* =========================================================
+   SUMRUDRA FINANCE - RESPONSIVE LAYOUT ENGINE
+   Mobile • Tablet • Laptop • Desktop
+   ========================================================= */
+html,body{width:100%;max-width:100%;overflow-x:hidden}
+body{-webkit-text-size-adjust:100%;text-rendering:optimizeLegibility}
+img,svg,video,canvas{max-width:100%;height:auto}
+button,a,input,select{font-family:inherit}
+button{touch-action:manipulation}
+main,.landing-inner,.calc-panel,.backbar,.view-title{width:100%;min-width:0}
+.grid,.compare,.benefit-grid{min-width:0}
+.field,.option,.benefit,.calc-info{min-width:0}
+.inputwrap input{min-width:0}
+
+/* Large desktop */
+@media (min-width:1200px){
+  .header{padding-left:clamp(24px,4vw,70px);padding-right:clamp(24px,4vw,70px)}
+  .brand{font-size:24px}
+  main{max-width:1180px;padding:22px 28px}
+  .landing{padding:55px 28px}
+  .landing-inner{max-width:1050px}
+  .calc-menu{gap:16px}
+  .calc-choice{padding:19px 21px;border-radius:19px}
+  .calc-num{width:50px;height:50px;min-width:50px;font-size:14px}
+  .calc-name{font-size:18px}
+  .calc-desc{font-size:12.5px}
+  .app-view{padding:22px 28px 50px}
+  .backbar,.view-title,.calc-panel{max-width:1180px}
+  .view-title{font-size:30px}
+  .calc-panel .card{padding:24px}
+  .grid{gap:16px}
+  .benefit-grid{gap:14px}
+}
+
+/* Standard laptop / desktop */
+@media (min-width:851px) and (max-width:1199px){
+  main{max-width:1000px;padding:20px}
+  .landing{padding:42px 22px}
+  .landing-inner{max-width:850px}
+  .app-view{padding:18px 20px 42px}
+  .backbar,.view-title,.calc-panel{max-width:1000px}
+}
+
+/* Tablet */
+@media (min-width:651px) and (max-width:850px){
+  .header{padding:17px 16px}
+  .brand{font-size:19px}
+  .tag{font-size:11px}
+  .nav{grid-template-columns:repeat(4,1fr);gap:7px}
+  .nav a,.tab{font-size:10px;padding:9px 4px}
+  .landing{padding:35px 18px}
+  .landing-inner{max-width:720px}
+  .landing-title{font-size:clamp(34px,6vw,45px)}
+  .calc-choice{padding:16px}
+  .calc-name{font-size:15px}
+  .calc-desc{font-size:11px}
+  .app-view{padding:14px 16px 38px}
+  .backbar,.view-title,.calc-panel{max-width:850px}
+  .benefit-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
+/* Phone */
+@media (max-width:650px){
+  body{font-size:15px}
+  .header{padding:13px 12px 12px;position:relative}
+  .brand{font-size:17px;line-height:1.2}
+  .tag{font-size:10px;line-height:1.3}
+  .nav{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-top:10px}
+  .nav a,.tab{min-height:36px;display:flex;align-items:center;justify-content:center;font-size:10px;line-height:1.15;padding:7px 4px}
+  main{padding:9px}
+  .hero{border-radius:15px;padding:14px;margin-bottom:10px}
+  .hero h1{font-size:20px;line-height:1.2}
+  .hero p{font-size:12px;line-height:1.45}
+  .card{border-radius:15px;padding:14px;margin:10px 0}
+  .card h2{font-size:19px;line-height:1.25}
+  .sub{font-size:12px;line-height:1.45}
+  .grid{grid-template-columns:minmax(0,1fr)!important;gap:10px}
+  .compare{grid-template-columns:minmax(0,1fr)!important;gap:10px}
+  .field label{font-size:11.5px}
+  .inputwrap{min-height:47px;border-radius:10px}
+  .inputwrap input{font-size:16px;padding:12px 7px}
+  .prefix,.suffix{padding:0 8px;font-size:12px}
+  select{min-height:47px;font-size:16px}
+  button{min-height:47px;padding:12px 14px;font-size:14px}
+  .result,.emi-result,.status,.close-box{padding:13px}
+  .result strong,.emi-result strong{font-size:19px}
+  .home-highlight .big{font-size:25px}
+  .benefits{padding:13px;border-radius:15px}
+  .benefit-grid{grid-template-columns:minmax(0,1fr)!important;gap:8px}
+  .benefit{padding:12px;min-height:auto}
+  .benefit b{font-size:12px}
+  .benefit span{font-size:11px}
+  .note{font-size:10px;line-height:1.4}
+  .footer{padding:16px 10px;font-size:10px;line-height:1.5}
+
+  /* Landing page */
+  .landing{min-height:calc(100svh - 82px);padding:34px 10px 24px;align-items:flex-start}
+  .landing-inner{width:100%;max-width:100%}
+  .landing-title{font-size:clamp(29px,8.7vw,38px);line-height:1.02;margin:8px auto 9px}
+  .landing-sub{font-size:12px;line-height:1.45;margin-bottom:18px;padding:0 8px}
+  .calc-menu{gap:9px}
+  .calc-choice{gap:10px;padding:12px 10px;border-radius:14px;min-height:70px}
+  .calc-num{width:38px;height:38px;min-width:38px;border-radius:10px;font-size:11px}
+  .calc-name{font-size:13.5px;line-height:1.25}
+  .calc-desc{font-size:10px;line-height:1.3;margin-top:3px}
+  .calc-arrow{font-size:21px;padding-left:1px}
+  .landing-brand{font-size:8.5px;line-height:1.4;margin-top:15px;padding:0 6px}
+
+  /* Calculator page */
+  .app-view{padding:9px 9px 28px}
+  .backbar{margin-bottom:9px}
+  .back-btn{min-height:45px;padding:9px 13px;font-size:14px}
+  .view-title{font-size:21px;line-height:1.2;margin:7px auto 10px;padding:0 2px}
+  .calc-panel{width:100%}
+  .calc-panel>.card{margin-top:0}
+  .section-title{font-size:11px;line-height:1.3}
+  .cc-note{font-size:9.5px}
+
+  /* Contact */
+  .sf-contact{padding:0 9px 35px}
+  .sf-contact-card{padding:18px;border-radius:18px;gap:15px}
+  .sf-contact-card h2{font-size:23px}
+  .sf-contact-card p{font-size:13px}
+  .sf-contact-numbers{width:100%;display:grid;grid-template-columns:1fr;gap:8px}
+  .sf-contact-numbers a,.sf-contact-actions a{width:100%;text-align:center;padding:12px 10px}
+  .sf-contact-actions{width:100%;display:grid;grid-template-columns:1fr;gap:8px}
+}
+
+/* Very small phones */
+@media (max-width:380px){
+  .brand{font-size:15px}
+  .tag{font-size:9px}
+  .nav a,.tab{font-size:9px}
+  .landing{padding-top:25px}
+  .landing-title{font-size:28px}
+  .calc-choice{min-height:66px;padding:10px 8px;gap:8px}
+  .calc-num{width:34px;height:34px;min-width:34px}
+  .calc-name{font-size:12.5px}
+  .calc-desc{font-size:9.3px}
+  .calc-arrow{font-size:19px}
+  .view-title{font-size:19px}
+}
+
+/* Desktop calculator readability */
+@media (min-width:651px){
+  .calc-panel .field label{font-size:12px}
+  .calc-panel .inputwrap input,.calc-panel select{font-size:15px}
+  .calc-panel button{min-height:46px}
+}
+
+/* Prevent long financial text from breaking the layout */
+.result,.status,.close-box,.home-highlight,.benefit,.sf-contact-card,.option{
+  overflow-wrap:anywhere;
+}
+
+
+/* =========================================================
+   FINAL POLISH — clean responsive corporate layout
+   ========================================================= */
+
+/* Keep the main site readable and prevent 3D hero objects from
+   fighting with the text on small screens. */
+.sf-site{overflow:hidden}
+.sf-hero-inner{max-width:1160px}
+.sf-hero-copy{min-width:0}
+.sf-scene{width:100%;min-width:0}
+.sf-card3d{will-change:transform}
+.sf-nav{min-height:62px}
+.sf-navlinks a{white-space:nowrap}
+
+/* Desktop hero */
+@media (min-width:901px){
+  .sf-hero{min-height:690px}
+  .sf-hero-inner{grid-template-columns:minmax(0,1.02fr) minmax(390px,.98fr);gap:55px}
+  .sf-scene{height:480px}
+  .sf-card3d{width:350px}
+}
+
+/* Tablet */
+@media (min-width:601px) and (max-width:900px){
+  .sf-hero{padding:52px 20px 62px}
+  .sf-hero-inner{grid-template-columns:1fr;gap:28px}
+  .sf-title{font-size:clamp(44px,8vw,66px)}
+  .sf-scene{height:360px;max-width:620px;margin:auto}
+  .sf-shortcuts{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
+/* Phone: clean, stacked, no overlapping 3D cards */
+@media (max-width:600px){
+  .sf-nav{
+    position:relative;
+    padding:10px 12px;
+    gap:8px;
+  }
+  .sf-brand{font-size:12px;letter-spacing:.15px;white-space:nowrap}
+  .sf-mark{width:34px;height:34px;min-width:34px;border-radius:10px}
+  .sf-mark:after{font-size:18px}
+  .sf-navlinks{gap:4px}
+  .sf-navlinks a{font-size:9.5px;padding:7px 7px}
+  .sf-navlinks a:nth-child(4){display:none}
+
+  .sf-hero{
+    min-height:auto;
+    padding:38px 16px 42px;
+    display:block;
+  }
+  .sf-hero-inner{display:block;width:100%}
+  .sf-kicker{font-size:9.5px;padding:7px 10px;max-width:100%}
+  .sf-title{
+    font-size:clamp(39px,12vw,52px);
+    letter-spacing:-2.5px;
+    line-height:.94;
+    margin:17px 0 14px;
+  }
+  .sf-lead{font-size:14px;line-height:1.6}
+  .sf-actions{display:grid;grid-template-columns:1fr;gap:9px;margin-top:20px}
+  .sf-btn{justify-content:center;min-height:46px;font-size:13px}
+
+  .sf-scene{
+    height:300px;
+    width:100%;
+    max-width:360px;
+    margin:18px auto 0;
+    display:block;
+    transform:none!important;
+    animation:none!important;
+  }
+  .sf-card3d.main{
+    left:50%;
+    top:50%;
+    width:min(265px,78vw);
+    transform:translate(-50%,-50%) rotateY(-7deg) rotateX(3deg)!important;
+    padding:18px;
+  }
+  .sf-card3d.back,.sf-card3d.bottom{display:none}
+  .sf-big{font-size:27px;margin:8px 0}
+  .sf-mini{font-size:10.5px}
+  .sf-float{
+    font-size:9px;
+    padding:8px 9px;
+    white-space:nowrap;
+  }
+  .sf-float.one{right:0;top:5%}
+  .sf-float.two{left:0;bottom:4%}
+
+  .sf-section{width:calc(100% - 24px);padding:48px 0}
+  .sf-section-head{margin-bottom:22px}
+  .sf-h2{font-size:28px;letter-spacing:-.8px}
+  .sf-section-head p{font-size:12px;line-height:1.55}
+  .sf-shortcuts{grid-template-columns:1fr;gap:10px}
+  .sf-short{
+    min-height:0;
+    padding:17px;
+    border-radius:17px;
+  }
+  .sf-short h3{font-size:15px;margin:12px 0 5px}
+  .sf-short p{font-size:11px}
+  .sf-products{grid-template-columns:1fr 1fr;gap:9px}
+  .sf-product{padding:13px;border-radius:14px}
+  .sf-product b{font-size:11.5px}
+  .sf-product span{font-size:9.5px}
+  .sf-stats{grid-template-columns:1fr 1fr;gap:9px}
+  .sf-stat{padding:15px;border-radius:14px;min-height:105px}
+  .sf-stat strong{font-size:21px}
+  .sf-stat small{font-size:9px}
+  .sf-about{grid-template-columns:1fr;gap:10px}
+  .sf-panel{padding:18px;border-radius:17px}
+  .sf-panel h3{font-size:17px}
+  .sf-panel p,.sf-list li{font-size:11px}
+  .sf-cta{width:calc(100% - 24px);margin-bottom:45px;padding:22px;border-radius:20px}
+  .sf-cta h2{font-size:25px}
+}
+
+/* Extra-small phones */
+@media (max-width:380px){
+  .sf-brand{font-size:10.5px}
+  .sf-navlinks a{font-size:8.5px;padding:6px}
+  .sf-hero{padding-top:28px}
+  .sf-title{font-size:37px}
+  .sf-scene{height:270px}
+  .sf-card3d.main{width:245px}
+  .sf-products{grid-template-columns:1fr}
+}
+
+/* ----- Intro splash: stable orbit that looks intentional on every screen ----- */
+#sfIntroSplash{
+  background:
+    radial-gradient(circle at 20% 25%,rgba(230,30,55,.34),transparent 30%),
+    radial-gradient(circle at 80% 75%,rgba(0,110,255,.38),transparent 34%),
+    linear-gradient(135deg,#050817 0%,#062b73 52%,#33051d 100%);
+}
+#sfIntroSplash .sf-intro-scene{
+  width:min(94vw,900px);
+  height:min(78vh,620px);
+}
+#sfIntroSplash .sf-orbit{
+  position:absolute;
+  left:50%;top:50%;
+  width:min(690px,86vw);
+  height:min(330px,42vw);
+  inset:auto;
+  transform:translate(-50%,-50%) rotateX(63deg);
+  transform-style:preserve-3d;
+  animation:sfOrbitClean 8s linear infinite;
+}
+#sfIntroSplash .sf-orbit::before{
+  width:100%;height:100%;left:0;top:0;margin:0;
+  transform:none;
+  border:2px solid rgba(78,163,255,.55);
+  box-shadow:0 0 35px rgba(25,125,255,.28);
+}
+#sfIntroSplash .sf-orbit::after{
+  width:82%;height:82%;left:9%;top:9%;margin:0;
+  transform:none;
+  border:1px solid rgba(255,63,86,.42);
+}
+#sfIntroSplash .sf-product{
+  position:absolute;
+  left:auto;top:auto;
+  transform:none;
+  z-index:2;
+}
+#sfIntroSplash .sf-product span{
+  font-size:clamp(9px,1.35vw,13px);
+  padding:8px 12px;
+  background:rgba(8,20,48,.72);
+  border:1px solid rgba(255,255,255,.23);
+  box-shadow:0 8px 22px rgba(0,0,0,.28);
+}
+#sfIntroSplash .sf-product:nth-child(1){left:47%;top:-5%}
+#sfIntroSplash .sf-product:nth-child(2){left:76%;top:12%}
+#sfIntroSplash .sf-product:nth-child(3){right:-3%;top:45%}
+#sfIntroSplash .sf-product:nth-child(4){right:11%;bottom:3%}
+#sfIntroSplash .sf-product:nth-child(5){left:42%;bottom:-9%}
+#sfIntroSplash .sf-product:nth-child(6){left:8%;bottom:4%}
+#sfIntroSplash .sf-product:nth-child(7){left:-4%;top:43%}
+#sfIntroSplash .sf-product:nth-child(8){left:18%;top:10%}
+#sfIntroSplash .sf-intro-core{
+  width:min(90vw,720px);
+  z-index:8;
+}
+#sfIntroSplash .sf-intro-brand{
+  font-size:clamp(35px,7.5vw,74px);
+  letter-spacing:-.045em;
+}
+#sfIntroSplash .sf-intro-welcome{
+  font-size:clamp(15px,2.7vw,26px);
+  margin-top:16px;
+}
+#sfIntroSplash .sf-intro-sub{font-size:clamp(9px,1.5vw,13px)}
+@keyframes sfOrbitClean{
+  0%{transform:translate(-50%,-50%) rotateX(63deg) rotateZ(0deg)}
+  100%{transform:translate(-50%,-50%) rotateX(63deg) rotateZ(360deg)}
+}
+@media(max-width:600px){
+  #sfIntroSplash .sf-intro-scene{width:100vw;height:78vh}
+  #sfIntroSplash .sf-intro-core{transform:translateZ(0)!important}
+  #sfIntroSplash .sf-intro-brand{font-size:clamp(34px,10vw,48px);line-height:1}
+  #sfIntroSplash .sf-intro-welcome{font-size:15px;line-height:1.3;padding:0 25px}
+  #sfIntroSplash .sf-intro-sub{font-size:8.5px;letter-spacing:.08em;padding:0 20px}
+  #sfIntroSplash .sf-orbit{
+    width:86vw;height:43vw;
+    transform:translate(-50%,-50%) rotateX(63deg);
+  }
+  #sfIntroSplash .sf-product span{font-size:8px;padding:6px 8px}
+  #sfIntroSplash .sf-product:nth-child(1){left:42%;top:-15%}
+  #sfIntroSplash .sf-product:nth-child(2){left:75%;top:4%}
+  #sfIntroSplash .sf-product:nth-child(3){display:none}
+  #sfIntroSplash .sf-product:nth-child(4){right:2%;bottom:0}
+  #sfIntroSplash .sf-product:nth-child(5){left:38%;bottom:-17%}
+  #sfIntroSplash .sf-product:nth-child(6){left:4%;bottom:0}
+  #sfIntroSplash .sf-product:nth-child(7){display:none}
+  #sfIntroSplash .sf-product:nth-child(8){left:8%;top:5%}
+  #sfIntroSplash .sf-intro-ring{inset:24% 4%}
+}
+
+
+/* =========================================================
+   FINAL VIEWPORT FIX
+   Forces the corporate website to occupy the complete
+   device viewport. Prevents half-screen / clipped layout.
+   ========================================================= */
+html{
+  width:100%!important;
+  min-width:100%!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:0!important;
+  overflow-x:hidden!important;
+}
+body{
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:0!important;
+  overflow-x:hidden!important;
+}
+.sf-site{
+  display:block!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:0!important;
+  overflow-x:hidden!important;
+}
+.sf-nav{
+  width:100%!important;
+  min-width:0!important;
+}
+.sf-hero{
+  width:100%!important;
+  min-width:0!important;
+}
+.sf-hero-inner{
+  width:min(1120px,calc(100% - 32px))!important;
+  max-width:1120px!important;
+  min-width:0!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
+.sf-section{
+  width:min(1120px,calc(100% - 32px))!important;
+  max-width:1120px!important;
+  min-width:0!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
+.sf-cta{
+  width:min(1120px,calc(100% - 32px))!important;
+  max-width:1120px!important;
+}
+.sf-footer{
+  width:100%!important;
+  min-width:0!important;
+}
+
+/* Never let a child create a wider layout */
+.sf-site *,
+.sf-site *::before,
+.sf-site *::after{
+  box-sizing:border-box;
+  max-width:100%;
+}
+.sf-hero-inner > *,
+.sf-section > *,
+.sf-nav > *{
+  min-width:0;
+}
+
+/* Responsive breakpoint intentionally raised so phones/tablets
+   don't accidentally receive the desktop two-column composition. */
+@media (max-width:900px){
+  .sf-hero{
+    min-height:auto!important;
+    padding:45px 16px 48px!important;
+  }
+  .sf-hero-inner{
+    display:flex!important;
+    flex-direction:column!important;
+    width:100%!important;
+    max-width:720px!important;
+    gap:25px!important;
+  }
+  .sf-hero-copy{
+    width:100%!important;
+  }
+  .sf-scene{
+    width:100%!important;
+    max-width:620px!important;
+    height:350px!important;
+    margin:0 auto!important;
+    order:2!important;
+  }
+  .sf-shortcuts{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  .sf-products{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  .sf-stats{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  .sf-about{
+    grid-template-columns:1fr!important;
+  }
+  .sf-cta{
+    flex-direction:column!important;
+    align-items:flex-start!important;
+  }
+}
+
+/* Phone */
+@media (max-width:600px){
+  .sf-nav{
+    padding:10px 12px!important;
+  }
+  .sf-brand{
+    font-size:12px!important;
+    white-space:nowrap;
+  }
+  .sf-navlinks{
+    gap:3px!important;
+    flex-shrink:0;
+  }
+  .sf-navlinks a{
+    font-size:9px!important;
+    padding:7px 7px!important;
+  }
+  .sf-navlinks a:nth-child(n+3){
+    display:none!important;
+  }
+
+  .sf-hero{
+    padding:32px 12px 36px!important;
+  }
+  .sf-hero-inner{
+    width:100%!important;
+    max-width:100%!important;
+    gap:18px!important;
+  }
+  .sf-kicker{
+    max-width:100%!important;
+    font-size:9px!important;
+    letter-spacing:.45px!important;
+  }
+  .sf-title{
+    font-size:clamp(38px,11.5vw,52px)!important;
+    letter-spacing:-2px!important;
+    margin:16px 0 12px!important;
+  }
+  .sf-lead{
+    font-size:13.5px!important;
+    line-height:1.55!important;
+  }
+  .sf-actions{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    width:100%!important;
+    gap:8px!important;
+    margin-top:18px!important;
+  }
+  .sf-btn{
+    width:100%!important;
+    justify-content:center!important;
+  }
+
+  .sf-scene{
+    width:100%!important;
+    max-width:355px!important;
+    height:275px!important;
+    margin:0 auto!important;
+  }
+  .sf-card3d.main{
+    width:min(255px,75vw)!important;
+    padding:18px!important;
+    left:50%!important;
+    top:50%!important;
+    transform:translate(-50%,-50%) rotateY(-5deg) rotateX(2deg)!important;
+  }
+  .sf-card3d.back,
+  .sf-card3d.bottom{
+    display:none!important;
+  }
+  .sf-float.one{
+    right:0!important;
+    top:5%!important;
+  }
+  .sf-float.two{
+    left:0!important;
+    bottom:3%!important;
+  }
+
+  .sf-section{
+    width:calc(100% - 24px)!important;
+    max-width:none!important;
+    padding:50px 0!important;
+  }
+  .sf-shortcuts,
+  .sf-products{
+    grid-template-columns:1fr!important;
+    width:100%!important;
+  }
+  .sf-short{
+    width:100%!important;
+    min-height:145px!important;
+  }
+  .sf-stats{
+    grid-template-columns:1fr 1fr!important;
+  }
+  .sf-cta{
+    width:calc(100% - 24px)!important;
+    max-width:none!important;
+  }
+
+  /* Intro: full viewport, never half-width */
+  #sfIntroSplash{
+    width:100vw!important;
+    height:100vh!important;
+    min-width:100vw!important;
+    max-width:none!important;
+    left:0!important;
+    right:0!important;
+  }
+  #sfIntroSplash .sf-intro-scene{
+    width:100vw!important;
+    max-width:none!important;
+  }
+}
+
+/* Small phone */
+@media (max-width:380px){
+  .sf-brand{font-size:10.5px!important}
+  .sf-navlinks a{font-size:8px!important;padding:6px!important}
+  .sf-title{font-size:36px!important}
+  .sf-scene{height:255px!important}
+  .sf-card3d.main{width:235px!important}
+  .sf-stats{grid-template-columns:1fr!important}
+}
+
+/* Desktop: make sure the full-width background remains full-width */
+@media (min-width:901px){
+  .sf-hero-inner{
+    grid-template-columns:minmax(0,1.15fr) minmax(360px,.85fr)!important;
+  }
+}
+
+
+/* =========================================================
+   PRODUCT PORTFOLIO IS A NORMAL RESPONSIVE GRID
+   (The intro orbit also uses .sf-product, so scope these
+   rules to .sf-products only.)
+   ========================================================= */
+.sf-products{
+  position:relative!important;
+  width:100%!important;
+  min-width:0!important;
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+}
+.sf-products .sf-product{
+  position:relative!important;
+  left:auto!important;
+  top:auto!important;
+  right:auto!important;
+  bottom:auto!important;
+  width:auto!important;
+  min-width:0!important;
+  max-width:100%!important;
+  height:auto!important;
+  transform:none!important;
+  animation:none!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  padding:20px!important;
+  border-radius:18px!important;
+  white-space:normal!important;
+  overflow:hidden!important;
+  background:rgba(255,255,255,.72)!important;
+  border:1px solid rgba(10,70,140,.12)!important;
+  box-shadow:0 12px 30px rgba(0,40,100,.07)!important;
+}
+.sf-products .sf-product b{
+  display:block!important;
+  position:static!important;
+  font-size:15px!important;
+  line-height:1.25!important;
+  white-space:normal!important;
+}
+.sf-products .sf-product span{
+  display:block!important;
+  position:static!important;
+  width:auto!important;
+  max-width:100%!important;
+  margin-top:8px!important;
+  padding:0!important;
+  border:0!important;
+  background:none!important;
+  box-shadow:none!important;
+  backdrop-filter:none!important;
+  border-radius:0!important;
+  font-size:12px!important;
+  line-height:1.5!important;
+  font-weight:500!important;
+  letter-spacing:0!important;
+  text-shadow:none!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
+}
+
+@media (max-width:900px){
+  .sf-products{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+}
+@media (max-width:600px){
+  .sf-products{
+    grid-template-columns:1fr!important;
+    gap:10px!important;
+  }
+  .sf-products .sf-product{
+    width:100%!important;
+    min-height:115px!important;
+    padding:16px!important;
+  }
+  .sf-products .sf-product b{
+    font-size:14px!important;
+  }
+  .sf-products .sf-product span{
+    font-size:11px!important;
+    line-height:1.45!important;
+  }
+}
+@media (max-width:380px){
+  .sf-products .sf-product{
+    min-height:105px!important;
+    padding:14px!important;
+  }
+}
+
+/* Absolute safety against horizontal overflow on every device */
+.sf-site,
+.sf-site main,
+.sf-site section{
+  max-width:100vw!important;
+  overflow-x:clip;
+}
+
+
+/* Intro trust metrics + lender marquee */
+.sf-intro-trust{
+  position:absolute;z-index:8;left:50%;bottom:7.5%;transform:translateX(-50%);
+  width:min(760px,88vw);text-align:center;pointer-events:none;
+  animation:sfTrustIn 1.4s .45s ease both;
+}
+.sf-trust-line{font-size:clamp(11px,1.8vw,16px);color:#d9e7ff;letter-spacing:.01em}
+.sf-trust-line strong{font-weight:1000;color:#fff;font-size:1.08em}
+.sf-trust-disbursement{margin-top:5px;font-size:clamp(15px,2.5vw,22px);font-weight:900;color:#fff;text-shadow:0 4px 18px #0006}
+.sf-trust-disbursement strong{color:#ff5268}
+.sf-lender-label{margin-top:9px;font-size:8px;letter-spacing:.22em;text-transform:uppercase;color:#a9c9f7;font-weight:900}
+.sf-lender-marquee{margin:7px auto 0;overflow:hidden;width:min(690px,88vw);mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent)}
+.sf-lender-track{display:flex;width:max-content;gap:9px;animation:sfLenderMove 24s linear infinite}
+.sf-lender-track span{display:inline-flex;align-items:center;white-space:nowrap;padding:6px 11px;border:1px solid #ffffff30;background:#ffffff12;border-radius:999px;color:#eef5ff;font-size:9px;font-weight:850;backdrop-filter:blur(8px)}
+.sf-festival-theme{display:none;position:absolute;z-index:20;left:50%;top:8%;transform:translateX(-50%);padding:8px 15px;border-radius:999px;background:#ffffff18;border:1px solid #ffffff3b;color:#fff;font-size:clamp(10px,1.8vw,14px);font-weight:950;letter-spacing:.04em;white-space:nowrap;box-shadow:0 10px 35px #0003;backdrop-filter:blur(10px);animation:sfFestivalIn .9s ease both}
+.sf-festival-theme.active{display:block}
+#sfIntroSplash.festival-holi{background:radial-gradient(circle at 20% 30%,#ff3d81 0,transparent 25%),radial-gradient(circle at 80% 65%,#24a0ff 0,transparent 28%),radial-gradient(circle at 45% 80%,#ffd53d 0,transparent 24%),linear-gradient(135deg,#35107b,#0b4ea2 50%,#8e173d)}
+#sfIntroSplash.festival-diwali{background:radial-gradient(circle at 50% 42%,#ffd76a 0,transparent 18%),radial-gradient(circle at 20% 70%,#ff7a1a 0,transparent 28%),linear-gradient(135deg,#09071c,#34120b 52%,#16051f)}
+#sfIntroSplash.festival-eid{background:radial-gradient(circle at 50% 38%,#4ff2b0 0,transparent 18%),radial-gradient(circle at 80% 70%,#27a6ff 0,transparent 28%),linear-gradient(135deg,#041c2a,#075b56 55%,#082d4c)}
+#sfIntroSplash.festival-christmas{background:radial-gradient(circle at 50% 38%,#fff 0,transparent 14%),radial-gradient(circle at 20% 70%,#e5232d 0,transparent 28%),linear-gradient(135deg,#061a18,#0b5a3d 52%,#3b0710)}
+#sfIntroSplash.festival-republic,#sfIntroSplash.festival-independence{background:linear-gradient(145deg,#ff7a1a 0%,#f7f8ff 47%,#12874a 100%);color:#08233f}
+#sfIntroSplash.festival-republic .sf-intro-brand .blue,#sfIntroSplash.festival-independence .sf-intro-brand .blue{color:#08233f}
+#sfIntroSplash.festival-republic .sf-intro-welcome,#sfIntroSplash.festival-independence .sf-intro-welcome{color:#08233f}
+#sfIntroSplash.festival-republic .sf-intro-sub,#sfIntroSplash.festival-independence .sf-intro-sub{color:#254765}
+@keyframes sfTrustIn{from{opacity:0;transform:translate(-50%,12px)}to{opacity:1;transform:translate(-50%,0)}}
+@keyframes sfLenderMove{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes sfFestivalIn{from{opacity:0;transform:translate(-50%,-10px) scale(.96)}to{opacity:1;transform:translate(-50%,0) scale(1)}}
+@media(max-width:600px){
+  .sf-intro-trust{bottom:5.5%;width:92vw}
+  .sf-trust-line{font-size:10px}
+  .sf-trust-disbursement{font-size:16px;margin-top:4px}
+  .sf-lender-label{font-size:7px;margin-top:7px}
+  .sf-lender-track{gap:6px}
+  .sf-lender-track span{font-size:7.5px;padding:5px 8px}
+  .sf-festival-theme{top:4%;font-size:9px;padding:7px 11px;max-width:90vw;overflow:hidden;text-overflow:ellipsis}
 }
 
 </style>
 </head>
 <body>
+
+<!-- 6-second opening animation -->
+<div id="sfIntroSplash" aria-label="Sumrudra Finance introduction">
+  <div class="sf-intro-grid"></div>
+  <div class="sf-intro-glow"></div>
+  <div class="sf-intro-scene">
+    <div class="sf-intro-ring"></div>
+    <div class="sf-orbit" aria-hidden="true">
+      <div class="sf-product"><span>Personal Loan</span></div>
+      <div class="sf-product"><span>Home Loan</span></div>
+      <div class="sf-product"><span>Loan Against Property</span></div>
+      <div class="sf-product"><span>Car Loan</span></div>
+      <div class="sf-product"><span>Used Car Loan</span></div>
+      <div class="sf-product"><span>Business Loan</span></div>
+      <div class="sf-product"><span>Unsecured OD</span></div>
+      <div class="sf-product"><span>Secured OD</span></div>
+    </div>
+    <div class="sf-intro-core">
+      <div class="mini">Smart • Fast • Professional</div>
+      <div class="sf-intro-brand"><span class="red">SUMRUDRA</span> <span class="blue">FINANCE</span></div>
+      <div class="sf-intro-welcome">Welcome to the Digital Era of Lending</div>
+      <div class="sf-intro-sub">Loans • Eligibility • EMI Planning • Financial Solutions</div>
+    </div>
+
+    <div class="sf-intro-trust" aria-label="Sumrudra Finance highlights">
+      <div class="sf-trust-line"><strong><span id="sfYears">7+</span> Years</strong> of expertise as your loan partner</div>
+      <div class="sf-trust-disbursement"><strong>₹100+ Crore</strong> Annual Disbursement</div>
+      <div class="sf-lender-label">Finance Ecosystem</div>
+      <div class="sf-lender-marquee" aria-label="Lender names">
+        <div class="sf-lender-track">
+          <span>HDFC Bank</span><span>ICICI Bank</span><span>Axis Bank</span><span>State Bank of India</span><span>Kotak Mahindra Bank</span><span>IDFC FIRST Bank</span><span>HDB Financial Services</span><span>Hero Housing Finance</span>
+          <span>HDFC Bank</span><span>ICICI Bank</span><span>Axis Bank</span><span>State Bank of India</span><span>Kotak Mahindra Bank</span><span>IDFC FIRST Bank</span><span>HDB Financial Services</span><span>Hero Housing Finance</span>
+        </div>
+      </div>
+    </div>
+    <div id="sfFestivalTheme" class="sf-festival-theme" aria-live="polite"></div>
+  </div>
+  <div class="sf-intro-progress"><i></i></div>
+  <div class="sf-intro-loading">Entering Sumrudra Finance</div>
+</div>
+
 <style>
 /* SUMRUDRA FINANCE 3D CORPORATE LAYER */
 :root{--sf-blue:#0757c8;--sf-red:#e5232d;--sf-ink:#081a33;--sf-muted:#63728a;--sf-card:#ffffffee}
@@ -213,9 +1092,11 @@ body.calculator-mode #app{display:block!important;padding:0}
   <section class="sf-section" id="sfCalculators">
     <div class="sf-section-head"><div class="sf-eyebrow">Smart tools</div><h2 class="sf-h2">Your Loan Calculator Hub</h2><p>Use the calculator suite to understand eligibility, EMI, affordability, home-loan capacity and the difference between two loan options.</p></div>
     <div class="sf-shortcuts">
-      <button class="sf-short" type="button" onclick="openCalc('eligibility')"><div class="sf-icon">🧮</div><div class="sf-arrow">↗</div><h3>Multi-Tasking Loan Calculator</h3><p>Access Eligibility, Basic EMI, Affordability, Home Loan and Compare Your Loan tools from one place.</p></button>
-      <button class="sf-short" type="button" onclick="openCalc('homeLoan')"><div class="sf-icon">🏠</div><div class="sf-arrow">↗</div><h3>Home Loan Calculator</h3><p>Check property-based limits, income eligibility, FOIR and eligible EMI with the dedicated home-loan tool.</p></button>
-      <button class="sf-short" type="button" onclick="openCalc('compare')"><div class="sf-icon">📊</div><div class="sf-arrow">↗</div><h3>Compare Your Loan</h3><p>Compare EMI, interest and total repayment across two loan scenarios.</p></button>
+      <a class="sf-short" href="#eligibility" onclick="openCalcFromHome(event, &quot;eligibility&quot;)"><div class="sf-icon">✓</div><div class="sf-arrow">↗</div><h3>Eligibility Calculator</h3><p>Check loan eligibility using income, FOIR and existing monthly obligations.</p></a>
+      <a class="sf-short" href="#emi" onclick="openCalcFromHome(event, &quot;emi&quot;)"><div class="sf-icon">₹</div><div class="sf-arrow">↗</div><h3>Basic EMI Calculator</h3><p>Calculate monthly EMI, total interest and total repayment for your loan.</p></a>
+      <a class="sf-short" href="#affordability" onclick="openCalcFromHome(event, &quot;affordability&quot;)"><div class="sf-icon">◈</div><div class="sf-arrow">↗</div><h3>Loan Affordability Calculator</h3><p>Estimate the loan amount you can afford based on income and EMI capacity.</p></a>
+      <a class="sf-short" href="#homeLoan" onclick="openCalcFromHome(event, &quot;homeLoan&quot;)"><div class="sf-icon">⌂</div><div class="sf-arrow">↗</div><h3>Home Loan Calculator</h3><p>Check property value, LTV, FOIR, income eligibility and eligible home-loan amount.</p></a>
+      <a class="sf-short" href="#compare" onclick="openCalcFromHome(event, &quot;compare&quot;)"><div class="sf-icon">⇄</div><div class="sf-arrow">↗</div><h3>Compare Your Loan</h3><p>Compare EMI, interest and total repayment across two loan scenarios.</p></a>
     </div>
   </section>
 
@@ -250,26 +1131,26 @@ body.calculator-mode #app{display:block!important;padding:0}
     </div>
   </section>
 
-  
-<section class="sf-contact" id="sfContact">
-  <div class="sf-contact-inner">
-    <div>
-      <div class="sf-eyebrow">Contact us</div>
-      <h2>Need Loan Assistance?</h2>
-      <p>Call or WhatsApp Sumrudra Finance for loan assistance, eligibility support and calculator guidance.</p>
-      <div class="sf-contact-numbers">
-        <a href="tel:8882543198">📞 8882543198</a>
-        <a href="tel:9899088269">📞 9899088269</a>
+
+  <section class="sf-section sf-contact" id="sfContact">
+    <div class="sf-contact-card">
+      <div>
+        <div class="sf-eyebrow" style="color:#d8e8ff">CONTACT & SUPPORT</div>
+        <h2>Need Loan Assistance?</h2>
+        <p>For loan assistance, eligibility support and calculator-related help, contact Sumrudra Finance by call or WhatsApp.</p>
+        <div class="sf-contact-numbers">
+          <a href="tel:8882543198">📞 8882543198</a>
+          <a href="tel:9899088269">📞 9899088269</a>
+        </div>
+      </div>
+      <div class="sf-contact-actions">
+        <a href="tel:8882543198">Call Us</a>
+        <a href="https://wa.me/918882543198" target="_blank" rel="noopener">WhatsApp</a>
       </div>
     </div>
-    <div class="sf-contact-actions">
-      <a href="tel:8882543198">Call Us</a>
-      <a href="https://wa.me/918882543198" target="_blank" rel="noopener">WhatsApp</a>
-    </div>
-  </div>
-</section>
+  </section>
 
-<section class="sf-cta"><div><h2>Plan your loan before you apply.</h2><p>Start with the Sumrudra Finance calculator suite.</p></div><button class="sf-btn" type="button" onclick="openCalc('eligibility')">Open Calculators →</button></section>
+  <section class="sf-cta"><div><h2>Plan your loan before you apply.</h2><p>Start with the Sumrudra Finance calculator suite.</p></div><a class="sf-btn" href="#sfCalculators">Open Calculators →</a></section>
   <footer class="sf-footer"><b>SUMRUDRA FINANCE</b> • Brand associated with Sumrudra Distribution and Services Private Limited<br>Registered office: C-17 G/F, Guru Nanak Pura, Laxmi Nagar, New Delhi, Delhi 110092<br><br>Loan availability, interest rates, fees, tenure, approval and disbursement are subject to applicable lender policy, eligibility, documentation and final approval. Calculator results are indicative and do not constitute a loan sanction.</footer>
 </div>
 
@@ -310,6 +1191,18 @@ body.calculator-mode #app{display:block!important;padding:0}
 <div class="field"><label>Home Loan EMI</label><div class="inputwrap"><span class="prefix">₹</span><input id="home" type="number" value="" placeholder="0"></div></div>
 </div>
 <button onclick="eligibility()">Calculate EMI Eligibility</button><div class="result" id="eligResult"></div>
+<div class="elig-loan-box" id="eligLoanOptions" style="display:none">
+  <h3>CHECK YOUR ELIGIBLE LOAN AMOUNT</h3>
+  <div class="sub">Enter a Preferred EMI up to your Maximum Available EMI, then choose the rate and tenure to calculate the estimated loan amount.</div>
+  <div class="grid">
+    <div class="field"><label>Preferred EMI <span style="color:#8794a8;font-weight:500">(Maximum Available EMI or lower)</span></label><div class="inputwrap"><span class="prefix">₹</span><input id="eligPreferredEmi" type="number" value="" placeholder="0" min="0"></div><div class="input-error" id="eligPreferredError" style="display:none"></div></div>
+    <div class="field"><label>Rate of Interest</label><div class="inputwrap"><input id="eligLoanRate" type="number" value="" placeholder="0" min="0" step="0.01"><span class="suffix">%</span></div></div>
+    <div class="field"><label>Tenure</label><div class="inputwrap"><input id="eligLoanTenure" type="number" value="" placeholder="0" min="0"></div></div>
+    <div class="field"><label>Unit</label><select id="eligLoanUnit"><option value="years">Years</option><option value="months">Months</option></select></div>
+  </div>
+  <button class="red" onclick="calculateEligibilityLoan()">Calculate Eligible Loan Amount</button>
+  <div class="result" id="eligLoanResult"></div>
+</div>
 <div class="benefits" id="eligBenefits"><div class="benefits-title">YOUR CALCULATION BENEFITS</div><div class="benefit-grid"><div class="benefit blue"><b>Available EMI</b><span id="eligBenefitEmi">Calculate to see your available EMI.</span></div><div class="benefit red"><b>Existing Obligations</b><span id="eligBenefitObligations">Your current obligations will appear here.</span></div><div class="benefit green"><b>Eligibility Insight</b><span id="eligBenefitInsight">Your income and FOIR determine your available EMI capacity.</span></div></div></div>
 </section>
 
@@ -443,41 +1336,58 @@ body.calculator-mode #app{display:block!important;padding:0}
 </section>
 
 <div class="note">Planning calculator only. Actual eligibility, rate, fees, lender policy and sanction are subject to lender assessment and terms.</div>
-
-<div class="calculator-contact">
-  <div><h3>Need Loan Assistance?</h3><p>Contact us by call or WhatsApp.</p></div>
-  <div class="calculator-contact-actions">
-    <a href="tel:8882543198">Call 8882543198</a>
-    <a href="tel:9899088269">Call 9899088269</a>
-    <a href="https://wa.me/918882543198" target="_blank" rel="noopener">WhatsApp</a>
-  </div>
-</div>
 </section>
 </main>
 <footer class="footer">SUMRUDRA FINANCE • Brand of Sumrudra Distribution and Services Private Limited</footer>
 
 <script>
+function showCalculatorShell(){
+  document.body.classList.add('calculator-open');
+  document.getElementById('calculatorView').classList.add('active');
+  window.scrollTo({top:0,behavior:'instant'});
+}
 function openCalc(id){
-  const panel=document.getElementById(id);
-  const calculatorView=document.getElementById('calculatorView');
-  if(!panel || !calculatorView) return;
-
-  document.body.classList.add('calculator-mode');
-  document.getElementById('sfHome').style.display='none';
-  document.getElementById('app').style.display='block';
-  calculatorView.classList.add('active');
+  showCalculatorShell();
   document.querySelectorAll('.calc-panel').forEach(x=>x.classList.remove('active'));
-  panel.classList.add('active');
-  window.scrollTo(0,0);
+  const panel=document.getElementById(id);
+  if(panel) panel.classList.add('active');
+  history.pushState({calculator:id},'', '#'+id);
+  window.scrollTo({top:0,behavior:'instant'});
+}
+function openCalcFromHome(event,id){
+  if(event) event.preventDefault();
+  openCalc(id);
+}
+function openCalculatorHub(event){
+  if(event) event.preventDefault();
+  document.body.classList.add('calculator-open');
+  document.getElementById('calculatorView').classList.remove('active');
+  document.getElementById('landingPage').style.display='flex';
+  history.pushState({calculatorHub:true},'', '#calculatorHub');
+  window.scrollTo({top:0,behavior:'instant'});
 }
 function goHome(){
-  document.body.classList.remove('calculator-mode');
-  document.querySelectorAll('.calc-panel').forEach(x=>x.classList.remove('active'));
+  document.body.classList.remove('calculator-open');
   document.getElementById('calculatorView').classList.remove('active');
-  document.getElementById('app').style.display='none';
-  document.getElementById('sfHome').style.display='block';
-  window.scrollTo(0,0);
+  document.querySelectorAll('.calc-panel').forEach(x=>x.classList.remove('active'));
+  document.getElementById('landingPage').style.display='flex';
+  history.pushState({},'', '#sfHome');
+  window.scrollTo({top:0,behavior:'instant'});
 }
+window.addEventListener('popstate',function(){
+  const h=location.hash.replace('#','');
+  if(['eligibility','emi','affordability','homeLoan','compare'].includes(h)){
+    showCalculatorShell();
+    document.getElementById('landingPage').style.display='none';
+    document.querySelectorAll('.calc-panel').forEach(x=>x.classList.remove('active'));
+    const p=document.getElementById(h); if(p) p.classList.add('active');
+  }else if(h==='calculatorHub'){
+    openCalculatorHub();
+  }else{
+    document.body.classList.remove('calculator-open');
+    document.getElementById('calculatorView').classList.remove('active');
+  }
+});
 
 /* Zero is displayed as a placeholder. User can type immediately without selecting/deleting 0. */
 document.querySelectorAll('input[type=number]').forEach(input=>{
@@ -497,14 +1407,46 @@ function setBenefit(id,text){
   const e=document.getElementById(id);
   if(e) e.textContent=text;
 }
+let eligibilityMaxEmi=0;
 function eligibility(){
   const salary=n('salary'), foir=n('foir'), creditCardObligation=n('cc')*0.05, obligations=n('pl')+n('car')+creditCardObligation+n('home');
   const max=Math.max(0,salary*foir/100-obligations);
+  eligibilityMaxEmi=max;
   show('eligResult',`Maximum available EMI: <strong>${money(max)}</strong><br><small>Salary × FOIR − existing obligations (Credit Card = 5% of outstanding)</small>`);
+  const options=document.getElementById('eligLoanOptions');
+  if(options) options.style.display=max>0?'block':'none';
+  const pref=document.getElementById('eligPreferredEmi');
+  if(pref) pref.value='';
+  const err=document.getElementById('eligPreferredError');
+  if(err){err.style.display='none';err.textContent='';}
+  const loanResult=document.getElementById('eligLoanResult');
+  if(loanResult) loanResult.innerHTML='';
   setBenefit('eligBenefitEmi',`You have approximately ${money(max)} of available EMI capacity.`);
   setBenefit('eligBenefitObligations',`Your entered existing obligations total ${money(obligations)} per month, including ${money(creditCardObligation)} (5% of ${money(n('cc'))}) from your credit card outstanding.`);
   setBenefit('eligBenefitInsight',max>0?`You may have room for an additional EMI of up to ${money(max)}, subject to lender assessment.`:`Your current obligations use your available FOIR capacity. Reducing obligations may improve eligibility.`);
 }
+function calculateEligibilityLoan(){
+  const pref=n('eligPreferredEmi'), rate=n('eligLoanRate'), tenure=n('eligLoanTenure');
+  const unit=document.getElementById('eligLoanUnit').value;
+  const err=document.getElementById('eligPreferredError');
+  if(pref<=0){err.textContent='Please enter a Preferred EMI.';err.style.display='block';return;}
+  if(pref>eligibilityMaxEmi){err.textContent='Please write the Preferred EMI below or equal to Maximum Available EMI: '+money(eligibilityMaxEmi);err.style.display='block';return;}
+  err.style.display='none';
+  if(rate<0 || tenure<=0){show('eligLoanResult','Please enter a valid Rate of Interest and Tenure.');return;}
+  const months=tenure*(unit==='years'?12:1);
+  const m=rate/12/100;
+  const loan=m===0?pref*months:pref*(1-Math.pow(1+m,-months))/m;
+  const total=pref*months, interest=Math.max(0,total-loan);
+  show('eligLoanResult',`Preferred EMI: <strong>${money(pref)}</strong><br>Estimated Eligible Loan Amount: <strong>${money(loan)}</strong><br>Total Repayment: ${money(total)}<br>Total Interest: ${money(interest)}<br><small>Based on the selected EMI, rate and tenure. Final lender eligibility may differ.</small>`);
+}
+document.addEventListener('input',function(e){
+  if(e.target && e.target.id==='eligPreferredEmi'){
+    const err=document.getElementById('eligPreferredError');
+    const pref=n('eligPreferredEmi');
+    if(pref>eligibilityMaxEmi && eligibilityMaxEmi>0){err.textContent='Please write the Preferred EMI below or equal to Maximum Available EMI: '+money(eligibilityMaxEmi);err.style.display='block';}
+    else {err.style.display='none';err.textContent='';}
+  }
+});
 function basicEMI(){
   const P=n('amount'), r=n('rate'), months=n('tenure')*(document.getElementById('unit').value==='years'?12:1);
   const emi=calcEMI(P,r,months), total=emi*months, interest=Math.max(0,total-P);
@@ -721,6 +1663,322 @@ function recheckAfterClosureNon(){
 <script>try{document.documentElement.style.scrollBehavior="smooth";}catch(e){}</script>
 
 
+<script>
+(function(){
+  const splash=document.getElementById('sfIntroSplash');
+  if(!splash) return;
 
+  // 2019 is the reference year for the company's loan-domain experience.
+  const yearsEl=document.getElementById('sfYears');
+  const years=Math.max(1,new Date().getFullYear()-2019);
+  if(yearsEl) yearsEl.textContent=years+'+';
+
+  // Major Indian national holidays / festivals. Dates for lunar festivals are
+  // maintained as a yearly data set because they do not fall on a fixed date.
+  const calendar={
+    2026:{
+      '01-26':['Republic Day','republic','🇮🇳 Happy Republic Day'],
+      '03-04':['Holi','holi','🎨 Happy Holi'],
+      '03-21':['Eid-ul-Fitr','eid','🌙 Eid Mubarak'],
+      '04-03':['Good Friday','christmas','✝️ Happy Good Friday'],
+      '05-27':['Eid-ul-Adha','eid','🌙 Eid Mubarak'],
+      '08-15':['Independence Day','independence','🇮🇳 Happy Independence Day'],
+      '08-26':['Milad-un-Nabi','eid','🌙 Milad-un-Nabi Mubarak'],
+      '09-04':['Janmashtami','diwali','🪷 Happy Janmashtami'],
+      '10-02':['Gandhi Jayanti','republic','🙏 Gandhi Jayanti'],
+      '10-20':['Dussehra','diwali','🏹 Happy Dussehra'],
+      '11-08':['Diwali','diwali','🪔 Happy Diwali'],
+      '11-24':['Guru Nanak Jayanti','eid','🙏 Happy Guru Nanak Jayanti'],
+      '12-25':['Christmas','christmas','🎄 Merry Christmas']
+    },
+    2027:{
+      '01-26':['Republic Day','republic','🇮🇳 Happy Republic Day'],
+      '03-10':['Eid-ul-Fitr','eid','🌙 Eid Mubarak'],
+      '03-22':['Holi','holi','🎨 Happy Holi'],
+      '03-26':['Good Friday','christmas','✝️ Happy Good Friday'],
+      '05-17':['Eid-ul-Adha','eid','🌙 Eid Mubarak'],
+      '08-15':['Independence Day','independence','🇮🇳 Happy Independence Day'],
+      '08-15':['Independence Day','independence','🇮🇳 Happy Independence Day'],
+      '08-25':['Janmashtami','diwali','🪷 Happy Janmashtami'],
+      '10-02':['Gandhi Jayanti','republic','🙏 Gandhi Jayanti'],
+      '10-09':['Dussehra','diwali','🏹 Happy Dussehra'],
+      '10-29':['Diwali','diwali','🪔 Happy Diwali'],
+      '11-14':['Guru Nanak Jayanti','eid','🙏 Happy Guru Nanak Jayanti'],
+      '12-25':['Christmas','christmas','🎄 Merry Christmas']
+    }
+  };
+  const fixed={
+    '01-26':['Republic Day','republic','🇮🇳 Happy Republic Day'],
+    '08-15':['Independence Day','independence','🇮🇳 Happy Independence Day'],
+    '10-02':['Gandhi Jayanti','republic','🙏 Gandhi Jayanti'],
+    '12-25':['Christmas','christmas','🎄 Merry Christmas']
+  };
+  const now=new Date();
+  const key=String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+  const event=(calendar[now.getFullYear()]&&calendar[now.getFullYear()][key])||fixed[key];
+  const banner=document.getElementById('sfFestivalTheme');
+  if(event&&banner){
+    splash.classList.add('festival-'+event[1]);
+    banner.classList.add('active');
+    banner.textContent=event[2]+' • Sumrudra Finance';
+  }
+
+  const hide=()=>{
+    splash.classList.add('sf-intro-hide');
+    setTimeout(()=>splash.remove(),850);
+  };
+  setTimeout(hide,6000);
+})();
+</script>
+
+
+
+<!-- Sumrudra Voice Assistant: visible only after 10 seconds -->
+<style>
+
+  #sumrudra-voice {
+    position: fixed;
+    right: 18px;
+    bottom: 22px;
+    z-index: 999999;
+    font-family: Arial, sans-serif;
+  }
+  #sv-btn {
+    width: 62px;
+    height: 62px;
+    border: 0;
+    border-radius: 50%;
+    background: linear-gradient(135deg,#b0008f,#e000b7);
+    color: white;
+    font-size: 27px;
+    box-shadow: 0 8px 25px rgba(0,0,0,.22);
+    cursor: pointer;
+  }
+  #sv-btn.listening {
+    animation: pulse 1.1s infinite;
+  }
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(176,0,143,.55); }
+    70% { box-shadow: 0 0 0 18px rgba(176,0,143,0); }
+    100% { box-shadow: 0 0 0 0 rgba(176,0,143,0); }
+  }
+  #sv-box {
+    display:none;
+    width:310px;
+    margin-bottom:12px;
+    background:#fff;
+    border-radius:18px;
+    box-shadow:0 10px 35px rgba(0,0,0,.22);
+    overflow:hidden;
+    border:1px solid #eee;
+  }
+  #sv-head {
+    padding:15px 17px;
+    background:linear-gradient(135deg,#b0008f,#d100a8);
+    color:#fff;
+  }
+  #sv-head strong { display:block; font-size:16px; }
+  #sv-status { font-size:12px; opacity:.9; margin-top:4px; }
+  #sv-body { padding:15px; }
+  #sv-user, #sv-answer {
+    font-size:14px;
+    line-height:1.45;
+    margin-bottom:10px;
+  }
+  #sv-user { color:#666; }
+  #sv-answer {
+    background:#f7f7f7;
+    border-radius:12px;
+    padding:11px;
+    color:#222;
+  }
+  #sv-close {
+    float:right;
+    background:none;
+    border:0;
+    color:#fff;
+    font-size:20px;
+    cursor:pointer;
+  }
+
+
+/* Voice Assistant: reveal only after the 10-second intro window */
+#sumrudra-voice{display:none;}
+#sv-btn{background:linear-gradient(135deg,#d90429,#0057b8)!important;}
+#sv-head{background:linear-gradient(135deg,#b00020,#0057b8)!important;}
+
+</style>
+<div id="sumrudra-voice">
+  <div id="sv-box">
+    <div id="sv-head">
+      <button id="sv-close">×</button>
+      <strong>Sumrudra Voice Assistant</strong>
+      <div id="sv-status">Mic dabakar Sumrudra website ke baare mein poochiye</div>
+    </div>
+    <div id="sv-body">
+      <div id="sv-user">Aapka sawal yahan dikhega…</div>
+      <div id="sv-answer">Main sirf Sumrudra website par available loan/calculator information ke baare mein jawab dunga.</div>
+    </div>
+  </div>
+  <button id="sv-btn" title="Sumrudra Voice Assistant">🎙️</button>
+</div>
+<script>
+
+(function () {
+  const btn = document.getElementById("sv-btn");
+  const box = document.getElementById("sv-box");
+  const close = document.getElementById("sv-close");
+  const status = document.getElementById("sv-status");
+  const userBox = document.getElementById("sv-user");
+  const answerBox = document.getElementById("sv-answer");
+  const voiceRoot = document.getElementById("sumrudra-voice");
+
+  // Keep the voice assistant completely absent during the introduction.
+  // It becomes visible 10 seconds after page load.
+  window.setTimeout(function(){
+    if (voiceRoot) voiceRoot.style.display = "block";
+  }, 10000);
+
+  // IMPORTANT:
+  // This assistant is intentionally restricted to Sumrudra website topics.
+  // Add/edit website information inside this object as your website changes.
+  const knowledge = [
+    {
+      keys:["emi","installment","monthly payment","मंथली emi","किस्त"],
+      answer:"EMI Calculator se aap loan amount, interest rate aur tenure ke basis par estimated monthly EMI calculate kar sakte hain."
+    },
+    {
+      keys:["eligibility","eligible","loan eligibility","पात्रता","eligibility calculator"],
+      answer:"Eligibility Calculator aapki available information ke basis par estimated loan eligibility samajhne ke liye hai. Final approval bank/NBFC ke rules, income, existing EMI, CIBIL aur other criteria par depend karta hai."
+    },
+    {
+      keys:["affordability","kitna loan le sakta","how much loan","loan afford"],
+      answer:"Loan Affordability Calculator se aap estimate kar sakte hain ki aapki income aur existing obligations ke hisaab se loan amount kitna affordable ho sakta hai."
+    },
+    {
+      keys:["compare","comparison","compare loan","loan compare","तुलना"],
+      answer:"Compare Your Loan feature ka purpose different loan options ko compare karne mein help karna hai, jaise EMI, rate aur tenure."
+    },
+    {
+      keys:["foir","fixed obligation","obligation"],
+      answer:"FOIR ka matlab Fixed Obligations to Income Ratio hai. Ye income ke comparison mein existing aur proposed fixed loan obligations ko assess karne mein use hota hai."
+    },
+    {
+      keys:["personal loan","पर्सनल लोन"],
+      answer:"Sumrudra website par Personal Loan ki information available hai. Exact rate, eligibility aur approval lender ke current criteria par depend karte hain."
+    },
+    {
+      keys:["home loan","होम लोन"],
+      answer:"Sumrudra website par Home Loan ki information available hai. Exact rate, eligibility aur approval lender ke current criteria par depend karte hain."
+    },
+    {
+      keys:["loan against property","lap","property loan"],
+      answer:"Loan Against Property ek secured loan category hai jisme property collateral ke roop mein use ho sakti hai. Exact terms lender ke criteria par depend karte hain."
+    },
+    {
+      keys:["car loan","vehicle loan","used car"],
+      answer:"Sumrudra website par Car Loan aur Used Car Loan ki information available hai. Exact rate aur eligibility lender ke current criteria par depend karte hain."
+    }
+  ];
+
+  function clean(t){
+    return t.toLowerCase()
+      .replace(/[^\p{L}\p{N}\s]/gu," ")
+      .replace(/\s+/g," ")
+      .trim();
+  }
+
+  function getAnswer(text){
+    const q = clean(text);
+
+    // Keep the assistant strictly on Sumrudra website topics.
+    const greetings = ["hello","hi","namaste","नमस्ते","hey"];
+    if (greetings.some(x => q === x || q.startsWith(x+" "))) {
+      return "Namaste! Main Sumrudra website ke loan aur calculator features ke baare mein aapki madad kar sakta hoon.";
+    }
+
+    for (const item of knowledge) {
+      if (item.keys.some(k => q.includes(clean(k)))) return item.answer;
+    }
+
+    const websiteWords = [
+      "sumrudra","loan","emi","foir","calculator","eligibility",
+      "affordability","personal","home","property","car","vehicle",
+      "tenure","interest","rate","कर्ज","लोन","ब्याज","किस्त"
+    ];
+
+    if (!websiteWords.some(w => q.includes(clean(w)))) {
+      return "Maaf kijiye, main sirf Sumrudra website par available loan aur calculator information ke baare mein jawab deta hoon.";
+    }
+
+    return "Is sawal ki specific information abhi mere Sumrudra knowledge section mein added nahi hai. Aap EMI, Eligibility, Affordability, FOIR ya Compare Your Loan ke baare mein pooch sakte hain.";
+  }
+
+  function speak(text){
+    if (!("speechSynthesis" in window)) return;
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = /[\u0900-\u097F]/.test(text) ? "hi-IN" : "en-IN";
+    u.rate = 0.95;
+    window.speechSynthesis.speak(u);
+  }
+
+  let recognition = null;
+
+  function startListening(){
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) {
+      answerBox.textContent = "Aapke browser mein voice recognition supported nahi hai. Chrome mein website open karke try karein.";
+      speak(answerBox.textContent);
+      return;
+    }
+
+    recognition = new SR();
+    recognition.lang = "hi-IN";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    btn.classList.add("listening");
+    status.textContent = "Sun raha hoon… boliye";
+    answerBox.textContent = "Aap bol rahe hain…";
+
+    recognition.onresult = function(event){
+      const text = event.results[0][0].transcript;
+      userBox.textContent = "Aap: " + text;
+
+      const answer = getAnswer(text);
+      answerBox.textContent = answer;
+      status.textContent = "Jawab ready";
+      speak(answer);
+    };
+
+    recognition.onerror = function(event){
+      status.textContent = "Mic mein problem hui";
+      answerBox.textContent = "Mic permission allow karke dobara try karein.";
+    };
+
+    recognition.onend = function(){
+      btn.classList.remove("listening");
+      if (status.textContent === "Sun raha hoon… boliye") {
+        status.textContent = "Mic dabakar dobara boliye";
+      }
+    };
+
+    recognition.start();
+  }
+
+  btn.addEventListener("click", function(){
+    box.style.display = "block";
+    startListening();
+  });
+
+  close.addEventListener("click", function(){
+    if (recognition) try { recognition.stop(); } catch(e){}
+    window.speechSynthesis && window.speechSynthesis.cancel();
+    box.style.display = "none";
+  });
+})();
+
+</script>
 </body>
 </html>
