@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Sumrudra Finance – Smart Loan Calculator</title>
+<style>
+:root{--blue:#0757c8;--blue2:#0b78ef;--red:#e5232d;--bg:#f5f8fc;--text:#152238;--muted:#66758a;--card:#fff;--border:#dce5f0}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--text)}
+.header{background:linear-gradient(135deg,var(--blue),#123d88);color:#fff;padding:18px 18px 14px;position:sticky;top:0;z-index:10;box-shadow:0 4px 18px #163d7822}
+.brand{font-weight:900;letter-spacing:.5px;font-size:20px}.brand span{color:#ff5a62}.tag{font-size:12px;opacity:.85;margin-top:3px}
+.nav{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:14px}.nav a{color:#fff;text-decoration:none;text-align:center;background:#ffffff18;border:1px solid #ffffff35;border-radius:10px;padding:9px 4px;font-size:11px;font-weight:700}
+.nav a:first-child{background:#fff;color:var(--blue)}
+main{max-width:900px;margin:auto;padding:16px}
+.hero{background:#fff;border:1px solid var(--border);border-top:5px solid var(--red);border-radius:18px;padding:17px;margin-bottom:14px;box-shadow:0 5px 20px #153b6810}
+.hero h1{font-size:23px;margin:0 0 5px}.hero p{margin:0;color:var(--muted);font-size:13px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:18px;margin:14px 0;box-shadow:0 5px 20px #153b6810}
+.card h2{margin:0 0 5px;color:var(--blue);font-size:21px}.sub{color:var(--muted);font-size:13px;margin-bottom:15px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.field label{display:block;font-size:12px;font-weight:800;margin-bottom:6px}.inputwrap{display:flex;align-items:center;border:1.5px solid #cdd9e8;border-radius:11px;background:#fff;overflow:hidden}.prefix,.suffix{padding:0 10px;color:var(--muted);font-weight:700}.inputwrap input{border:0;outline:0;width:100%;padding:12px 8px;font-size:16px;color:var(--text);background:transparent}.inputwrap:focus-within{border-color:var(--blue2);box-shadow:0 0 0 3px #0b78ef18}
+select{width:100%;padding:12px;border:1.5px solid #cdd9e8;border-radius:11px;background:#fff;font-size:15px}
+.section-title{grid-column:1/-1;color:var(--red);font-size:12px;font-weight:900;border-bottom:1px solid #eee;padding-bottom:5px;margin-top:4px}
+button{width:100%;border:0;border-radius:11px;padding:13px 16px;background:linear-gradient(90deg,var(--blue),var(--blue2));color:#fff;font-weight:900;font-size:14px;cursor:pointer;margin-top:13px}button.red{background:linear-gradient(90deg,var(--red),#ff4b52)}
+.result{margin-top:13px;padding:14px;border-radius:13px;background:#eef6ff;border-left:5px solid var(--blue);display:none}.result strong{color:var(--blue);font-size:20px}.compare{display:grid;grid-template-columns:1fr 1fr;gap:14px}.option{border:1px solid #dce5f0;border-radius:14px;padding:13px}.option h3{margin:0 0 12px;color:var(--red);font-size:13px}
+.note{font-size:11px;color:var(--muted);text-align:center;margin:18px 0}.footer{text-align:center;padding:20px;background:#12294d;color:#fff;font-size:11px}
+@media(max-width:650px){main{padding:10px}.grid,.compare{grid-template-columns:1fr}.hero{padding:14px}.hero h1{font-size:21px}.nav{grid-template-columns:repeat(2,1fr)}.header{padding:14px}}
+
+.tab{color:#fff;text-align:center;background:#ffffff18;border:1px solid #ffffff35;border-radius:10px;padding:9px 4px;font-size:11px;font-weight:700;cursor:pointer;margin:0;width:100%}
+.tab.active{background:#fff;color:var(--blue);border-color:#fff}
+.calc-panel{display:none}.calc-panel.active{display:block}
+
+
+input[type=number]::placeholder{color:#152238;opacity:1}
+input[type=number]:focus::placeholder{color:#9aa8ba}
+input[type=number]{-moz-appearance:textfield}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+
+.home-highlight{margin:15px 0;padding:18px;border-radius:16px;background:linear-gradient(135deg,#0757c8,#0b78ef);color:#fff;box-shadow:0 8px 22px #0757c822}
+.home-highlight .small{font-size:12px;opacity:.9;margin-bottom:6px}.home-highlight .big{font-size:28px;font-weight:900}
+.status{display:none;margin-top:14px;padding:16px;border-radius:14px;border:1px solid var(--border);background:#f8fbff}
+.status.ok{border-left:5px solid var(--blue)}.status.bad{border-left:5px solid var(--red);background:#fff7f7}
+.status h3{margin:0 0 7px;font-size:17px}.status p{margin:5px 0;font-size:13px;color:var(--muted)}
+.close-box{display:none;margin-top:14px;padding:16px;border-radius:15px;background:#fff8f8;border:1px solid #ffd4d6}
+.close-box h3{margin:0 0 6px;color:var(--red);font-size:16px}.close-box .hint{font-size:12px;color:var(--muted);margin-bottom:13px}
+.emi-result{margin-top:12px;padding:14px;border-radius:13px;background:#eef6ff;border-left:5px solid var(--blue);font-size:14px}.emi-result strong{font-size:21px;color:var(--blue)}
+@media(max-width:650px){.nav{grid-template-columns:repeat(3,1fr)}.tab{font-size:10px;padding:8px 3px}}
+
+.input-error{display:none;margin-top:7px;padding:8px 10px;border-radius:9px;background:#fff0f0;color:#d51f2a;font-size:12px;font-weight:700;border:1px solid #ffc9cc}
+.input-error.show{display:block}
+.field.invalid .inputwrap{border-color:#e5232d;box-shadow:0 0 0 3px #e5232d18}
+
+/* PREMIUM 3D LANDING + FULL-PAGE CALCULATOR VIEWS */
+body{background:radial-gradient(circle at 20% 0%,#eef6ff 0,#f7f9fc 38%,#eef2f8 100%);min-height:100vh}
+.header{position:relative;padding:22px 18px 18px;background:linear-gradient(135deg,#063f98 0%,#0757c8 52%,#e5232d 150%);overflow:hidden}
+.header:before{content:"";position:absolute;width:230px;height:230px;border-radius:50%;right:-90px;top:-130px;background:#ffffff18;transform:rotateX(45deg);box-shadow:0 0 70px #fff2}
+.brand{position:relative;font-size:21px}.tag{position:relative}
+.landing{min-height:calc(100vh - 120px);display:flex;align-items:center;justify-content:center;padding:28px 14px}
+.landing-inner{width:min(760px,100%);text-align:center}
+.landing-title{font-size:clamp(29px,6vw,48px);font-weight:950;line-height:1.06;margin:0 0 9px;background:linear-gradient(90deg,#0757c8,#e5232d);-webkit-background-clip:text;background-clip:text;color:transparent}
+.landing-sub{color:var(--muted);font-size:14px;line-height:1.5;margin:0 auto 24px;max-width:620px}
+.calc-menu{display:flex;flex-direction:column;gap:13px;perspective:1000px}
+.calc-choice{position:relative;display:flex;align-items:center;gap:14px;width:100%;padding:15px 17px;border:1px solid #d5dfed;border-radius:17px;background:linear-gradient(145deg,#fff,#eef4fb);color:var(--text);text-align:left;cursor:pointer;box-shadow:8px 10px 20px #173a6517,-3px -3px 8px #fff;transform:translateZ(0);transition:.2s ease}
+.calc-choice:hover{transform:translateY(-3px) rotateX(1deg);box-shadow:12px 16px 28px #173a6522}
+.calc-choice:active{transform:translateY(0) scale(.99)}
+.calc-num{width:42px;height:42px;min-width:42px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(145deg,#0757c8,#0b78ef);color:#fff;font-weight:950;font-size:13px;box-shadow:4px 5px 10px #0757c844,inset 1px 1px 2px #fff6}
+.calc-choice:nth-child(even) .calc-num{background:linear-gradient(145deg,#c91c27,#e5232d)}
+.calc-info{flex:1;min-width:0;display:block}.calc-name{display:block;font-size:16px;line-height:1.25;font-weight:900}.calc-desc{display:block;font-size:11.5px;line-height:1.4;color:var(--muted);margin-top:4px}
+.calc-arrow{font-size:25px;line-height:1;color:var(--blue);font-weight:900;padding-left:3px}
+.landing-brand{margin-top:23px;font-size:10.5px;color:#7a8799;letter-spacing:.4px}
+.app-view{display:none;min-height:calc(100vh - 120px);padding:14px 10px 30px}
+.app-view.active{display:block}
+.backbar{max-width:900px;margin:0 auto 10px}
+.back-btn{display:inline-flex;align-items:center;gap:7px;width:auto;margin:0;padding:10px 15px;border-radius:11px;background:#fff;color:var(--blue);border:1px solid #d8e3f0;box-shadow:0 4px 12px #153b6812}
+.view-title{max-width:900px;margin:8px auto 12px;padding:0 4px;font-size:24px;font-weight:950;color:var(--blue)}
+.view-title span{color:var(--red)}
+.calc-panel{max-width:900px;margin:0 auto}
+.calc-panel.active{display:block}
+.calc-panel>.card,.calc-panel>.hero,.calc-panel>h2{margin-top:0}
+.graph3d{margin-top:15px;padding:15px;border-radius:17px;background:linear-gradient(145deg,#fafdff,#e8f0fa);border:1px solid #d4dfed;box-shadow:8px 10px 20px #153b6816,inset 2px 2px 5px #fff;overflow:hidden}
+.graph3d-title{font-size:12px;font-weight:900;color:#66758a;margin-bottom:11px}
+.graph-bars{height:120px;display:flex;align-items:flex-end;gap:9px;padding:8px 8px 0;transform:perspective(500px) rotateX(1deg)}
+.gbar{flex:1;min-width:25px;position:relative;height:var(--h);max-height:90px;border-radius:7px 7px 2px 2px;background:linear-gradient(90deg,#0757c8,#43a0ff);box-shadow:5px 7px 0 #063f98aa,8px 10px 14px #153b6820;transform:skewY(-2deg)}
+.gbar.red{background:linear-gradient(90deg,#e5232d,#ff6870);box-shadow:5px 7px 0 #b71922aa,8px 10px 14px #153b6820}
+.gbar span{position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:9px;font-weight:900;white-space:nowrap;color:#42526a}
+.graph-labels{display:flex;gap:9px;padding:7px 8px 0}.graph-labels span{flex:1;text-align:center;font-size:9px;color:#718096;font-weight:800}
+@media(max-width:650px){.landing{min-height:calc(100vh - 82px);align-items:flex-start;padding:54px 12px 28px}.landing-title{font-size:31px;margin-top:4px}.landing-sub{font-size:12px;margin-bottom:20px}.calc-menu{gap:11px}.calc-choice{padding:13px 12px;gap:11px;border-radius:15px}.calc-num{width:38px;height:38px;min-width:38px;border-radius:11px;font-size:12px}.calc-name{font-size:14px}.calc-desc{font-size:10.5px;line-height:1.35}.calc-arrow{font-size:23px}.landing-brand{margin-top:18px;font-size:9.5px}.view-title{font-size:21px}.app-view{padding-top:10px}}
+.cc-note{font-size:10px;color:#66758a;margin-top:5px;line-height:1.35}
+.benefits{margin-top:15px;padding:16px;border-radius:17px;background:linear-gradient(145deg,#fbfdff,#edf3fa);border:1px solid #d4dfed;box-shadow:8px 10px 20px #153b6816,inset 2px 2px 5px #fff}
+.benefits-title{font-size:12px;font-weight:950;letter-spacing:.4px;color:#56667d;margin-bottom:12px}
+.benefit-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.benefit{padding:13px;border-radius:13px;background:#fff;border:1px solid #dbe4ef;min-height:94px;display:flex;flex-direction:column;gap:7px;box-shadow:0 4px 10px #153b6810}
+.benefit b{font-size:12px;color:#26364d}
+.benefit span{font-size:11px;line-height:1.45;color:#66758a}
+.benefit.blue{border-top:4px solid #0757c8}.benefit.red{border-top:4px solid #e5232d}.benefit.green{border-top:4px solid #159a68}
+@media(max-width:650px){.benefit-grid{grid-template-columns:1fr}.benefit{min-height:auto}}
+
+
+/* Dedicated calculator views */
+.calc-page-view{display:none;min-height:100vh;background:linear-gradient(180deg,#f7fbff 0%,#eef5fc 100%);padding:18px 14px 50px}
+.calc-page-view.active{display:block;animation:pageIn .25s ease}
+@keyframes pageIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.calc-page-inner{max-width:1080px;margin:0 auto}
+.calc-back{display:inline-flex;align-items:center;gap:8px;border:1px solid #d3dfed;background:#fff;color:#0757c8;padding:10px 16px;border-radius:12px;font-weight:900;cursor:pointer;box-shadow:0 5px 14px #173a6514;margin-bottom:16px}
+.calc-page-title{font-size:clamp(25px,4vw,40px);font-weight:950;color:#10243d;margin:4px 0 5px}
+.calc-page-sub{color:#64748b;margin:0 0 18px;line-height:1.5}
+.calc-page-content{background:#fff;border:1px solid #dbe5f0;border-radius:22px;box-shadow:0 14px 40px #173a6517;padding:18px}
+.calc-contact{margin-top:22px;padding:18px;border-radius:18px;background:linear-gradient(135deg,#0757c8,#123f83);color:#fff;display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap}
+.calc-contact strong{font-size:18px}
+.calc-contact small{display:block;opacity:.9;margin-top:4px}
+.calc-contact-actions{display:flex;gap:9px;flex-wrap:wrap}
+.calc-contact a{color:#10243d;background:#fff;text-decoration:none;padding:10px 14px;border-radius:11px;font-weight:900}
+.contact-section{padding:70px 16px}
+.contact-card{max-width:1050px;margin:auto;border-radius:26px;padding:30px;background:linear-gradient(135deg,#0b58c9,#173c79);color:#fff;box-shadow:0 20px 50px #173a6530;display:flex;justify-content:space-between;align-items:center;gap:25px;flex-wrap:wrap}
+.contact-card h2{margin:0 0 8px;font-size:clamp(25px,4vw,38px)}
+.contact-card p{margin:0;color:#e8f1ff;line-height:1.6}
+.contact-numbers{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.contact-numbers a{color:#fff;text-decoration:none;font-weight:900}
+.contact-buttons{display:flex;gap:10px;flex-wrap:wrap}
+.contact-buttons a{background:#fff;color:#123f83;text-decoration:none;padding:12px 16px;border-radius:12px;font-weight:950}
+@media(max-width:650px){
+  .calc-page-view{padding:12px 9px 35px}
+  .calc-page-content{padding:12px;border-radius:18px}
+  .calc-page-title{font-size:25px}
+  .calc-back{margin-bottom:12px}
+  .contact-card{padding:22px}
+}
+
+
+/* Calculator mode: one calculator at a time, no page scrolling back to the intro */
+body.calculator-mode{background:var(--bg)}
+body.calculator-mode .sf-site,
+body.calculator-mode .header{display:none!important}
+body.calculator-mode #app{display:block!important;padding:0}
+#app{display:none}
+#calculatorView{min-height:100vh;background:linear-gradient(180deg,#f6faff 0%,#edf5fd 100%);padding:18px 12px 50px}
+#calculatorView.active{display:block}
+#calculatorView .backbar{max-width:1080px;margin:0 auto 14px}
+#calculatorView .view-title{max-width:1080px;margin:0 auto 15px;font-size:clamp(25px,4vw,40px);font-weight:950}
+#calculatorView .calc-panel{max-width:1080px;margin:0 auto}
+#calculatorView .calc-panel.active{display:block}
+#calculatorView .calc-panel:not(.active){display:none}
+#calculatorView .back-btn{min-height:44px;font-weight:900;cursor:pointer}
+#calculatorView .calculator-contact{max-width:1080px;margin:20px auto 0;padding:20px;border-radius:20px;background:linear-gradient(135deg,#0757c8,#123f83);color:#fff;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+#calculatorView .calculator-contact h3{margin:0 0 5px;font-size:20px}
+#calculatorView .calculator-contact p{margin:0;opacity:.9}
+#calculatorView .calculator-contact-actions{display:flex;gap:9px;flex-wrap:wrap}
+#calculatorView .calculator-contact-actions a{display:inline-flex;align-items:center;min-height:44px;padding:10px 14px;border-radius:11px;background:#fff;color:#123f83;text-decoration:none;font-weight:900}
+.sf-short,.sf-btn{font:inherit;cursor:pointer}
+.sf-contact{padding:0 16px 70px}
+.sf-contact-inner{max-width:1050px;margin:auto;padding:30px;border-radius:26px;background:linear-gradient(135deg,#0b58c9,#173c79);color:#fff;box-shadow:0 20px 50px #173a6530;display:flex;justify-content:space-between;align-items:center;gap:25px;flex-wrap:wrap}
+.sf-contact h2{margin:4px 0 8px;font-size:clamp(25px,4vw,38px)}
+.sf-contact p{margin:0;color:#e8f1ff;line-height:1.6;max-width:650px}
+.sf-contact-numbers{display:flex;gap:15px;flex-wrap:wrap;margin-top:14px}
+.sf-contact-numbers a{color:#fff;text-decoration:none;font-weight:900}
+.sf-contact-actions{display:flex;gap:10px;flex-wrap:wrap}
+.sf-contact-actions a{background:#fff;color:#123f83;text-decoration:none;padding:12px 17px;border-radius:12px;font-weight:950}
+@media(max-width:650px){
+  #calculatorView{padding:12px 9px 35px}
+  #calculatorView .view-title{font-size:25px}
+  #calculatorView .calculator-contact{padding:18px;border-radius:18px}
+  #calculatorView .calculator-contact-actions a{width:100%;justify-content:center}
+  .sf-contact{padding:0 12px 55px}
+  .sf-contact-inner{padding:22px;border-radius:20px}
+  .sf-contact-actions{width:100%}
+  .sf-contact-actions a{flex:1;text-align:center}
+}
+
+</style>
+</head>
+<body>
+<style>
+/* SUMRUDRA FINANCE 3D CORPORATE LAYER */
+:root{--sf-blue:#0757c8;--sf-red:#e5232d;--sf-ink:#081a33;--sf-muted:#63728a;--sf-card:#ffffffee}
+.sf-site{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--sf-ink);overflow:hidden;background:linear-gradient(180deg,#f8fbff 0%,#eef5ff 55%,#fff 100%)}
+.sf-nav{position:sticky;top:0;z-index:80;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px clamp(14px,4vw,46px);background:#ffffffdd;backdrop-filter:blur(16px);border-bottom:1px solid #dbe6f5;box-shadow:0 8px 30px #173a650d}
+.sf-brand{display:flex;align-items:center;gap:10px;font-weight:950;letter-spacing:.4px}.sf-mark{width:38px;height:38px;border-radius:12px;background:linear-gradient(145deg,var(--sf-blue),var(--sf-red));box-shadow:0 8px 20px #0757c83b;position:relative}.sf-mark:after{content:'S';position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-weight:1000;font-size:20px}.sf-navlinks{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}.sf-navlinks a{color:#243a58;text-decoration:none;font-size:12px;font-weight:800;padding:8px 11px;border-radius:10px}.sf-navlinks a:hover{background:#edf4ff;color:var(--sf-blue)}
+.sf-hero{position:relative;min-height:650px;display:grid;place-items:center;padding:70px 16px 90px;perspective:1200px}.sf-hero-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none}.sf-orb{position:absolute;border-radius:50%;filter:blur(1px);opacity:.8;animation:sfFloat 9s ease-in-out infinite}.sf-orb.one{width:330px;height:330px;right:-70px;top:55px;background:radial-gradient(circle at 35% 30%,#7db4ff88,#0757c800 68%)}.sf-orb.two{width:300px;height:300px;left:-90px;bottom:40px;background:radial-gradient(circle at 60% 40%,#ff9aa188,#e5232d00 70%);animation-delay:-3s}.sf-grid{position:absolute;inset:-20%;background-image:linear-gradient(#0757c80b 1px,transparent 1px),linear-gradient(90deg,#0757c80b 1px,transparent 1px);background-size:42px 42px;transform:rotateX(62deg) translateY(180px) scale(1.3);transform-origin:center;mask-image:linear-gradient(to bottom,transparent 5%,#000 45%,transparent 90%)}
+.sf-hero-inner{position:relative;z-index:2;width:min(1120px,100%);display:grid;grid-template-columns:1.15fr .85fr;gap:44px;align-items:center}.sf-kicker{display:inline-flex;align-items:center;gap:7px;padding:7px 11px;border-radius:999px;background:#fff;border:1px solid #dce7f6;color:var(--sf-blue);font-size:11px;font-weight:900;letter-spacing:.7px;box-shadow:0 8px 20px #173a6510}.sf-kicker i{width:7px;height:7px;background:#21b66f;border-radius:50%;box-shadow:0 0 0 5px #21b66f18}.sf-title{font-size:clamp(42px,7vw,82px);line-height:.95;letter-spacing:-3px;margin:20px 0 16px;font-weight:1000}.sf-title span{background:linear-gradient(90deg,var(--sf-blue),#1786ff 45%,var(--sf-red));-webkit-background-clip:text;background-clip:text;color:transparent}.sf-lead{font-size:clamp(15px,2vw,19px);line-height:1.6;color:var(--sf-muted);max-width:700px;margin:0}.sf-actions{display:flex;gap:11px;flex-wrap:wrap;margin-top:26px}.sf-btn{border:0;text-decoration:none;cursor:pointer;font-weight:950;border-radius:13px;padding:13px 17px;font-size:13px;display:inline-flex;align-items:center;gap:8px;transition:.2s}.sf-btn.primary{color:#fff;background:linear-gradient(135deg,var(--sf-blue),#1786ff);box-shadow:0 12px 25px #0757c83b}.sf-btn.secondary{color:var(--sf-blue);background:#fff;border:1px solid #cfdef1;box-shadow:0 9px 20px #173a6510}.sf-btn:hover{transform:translateY(-2px)}
+.sf-scene{height:420px;position:relative;display:grid;place-items:center;transform-style:preserve-3d;animation:sfScene 7s ease-in-out infinite}.sf-card3d{position:absolute;width:min(340px,78vw);border-radius:24px;padding:23px;background:linear-gradient(145deg,#fffffffa,#eaf3ffea);border:1px solid #d8e5f7;box-shadow:24px 30px 50px #173a6522,-5px -5px 18px #fff;backdrop-filter:blur(14px);transform-style:preserve-3d}.sf-card3d.main{transform:rotateY(-13deg) rotateX(7deg) translateZ(55px);z-index:3}.sf-card3d.back{transform:rotateY(18deg) rotateX(-4deg) translate3d(70px,-80px,-30px);opacity:.68}.sf-card3d.bottom{transform:rotateY(-8deg) rotateX(10deg) translate3d(-55px,90px,-50px);opacity:.62}.sf-chip{font-size:10px;font-weight:900;color:var(--sf-blue);letter-spacing:1px}.sf-big{font-size:32px;font-weight:1000;margin:9px 0}.sf-mini{font-size:11px;color:var(--sf-muted);line-height:1.5}.sf-bar{height:8px;border-radius:99px;background:#dbe7f5;margin-top:15px;overflow:hidden}.sf-bar span{display:block;height:100%;width:78%;background:linear-gradient(90deg,var(--sf-blue),var(--sf-red));border-radius:99px}.sf-float{position:absolute;padding:10px 12px;border-radius:13px;background:#fff;border:1px solid #dce7f6;box-shadow:0 15px 30px #173a6518;font-size:11px;font-weight:900;z-index:5}.sf-float.one{right:2%;top:8%}.sf-float.two{left:2%;bottom:9%}
+.sf-section{width:min(1120px,calc(100% - 28px));margin:0 auto;padding:78px 0}.sf-section-head{text-align:center;margin-bottom:34px}.sf-eyebrow{font-size:10px;letter-spacing:1.6px;color:var(--sf-red);font-weight:1000;text-transform:uppercase}.sf-h2{font-size:clamp(29px,5vw,46px);letter-spacing:-1.6px;margin:7px 0 9px;font-weight:1000}.sf-section-head p{max-width:720px;margin:auto;color:var(--sf-muted);line-height:1.6;font-size:14px}
+.sf-shortcuts{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.sf-short{position:relative;min-height:185px;padding:22px;border-radius:20px;text-decoration:none;color:var(--sf-ink);background:linear-gradient(145deg,#fff,#edf5ff);border:1px solid #d7e4f4;box-shadow:12px 17px 35px #173a6513;transform-style:preserve-3d;transition:.25s}.sf-short:hover{transform:translateY(-8px) rotateX(3deg) rotateY(-2deg);box-shadow:18px 26px 45px #173a6520}.sf-icon{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;background:linear-gradient(145deg,var(--sf-blue),#1786ff);color:#fff;font-size:22px;box-shadow:0 10px 22px #0757c83b}.sf-short:nth-child(2) .sf-icon{background:linear-gradient(145deg,var(--sf-red),#ff5961)}.sf-short:nth-child(3) .sf-icon{background:linear-gradient(145deg,#123d72,#6b94c9)}.sf-short h3{font-size:17px;margin:17px 0 7px}.sf-short p{font-size:12px;line-height:1.55;color:var(--sf-muted);margin:0}.sf-arrow{position:absolute;right:18px;top:22px;font-size:22px;color:var(--sf-blue)}
+.sf-products{display:grid;grid-template-columns:repeat(4,1fr);gap:13px}.sf-product{padding:18px;border-radius:17px;background:#fff;border:1px solid #dce7f5;box-shadow:0 12px 25px #173a650d;transition:.2s}.sf-product:hover{transform:translateY(-5px);box-shadow:0 18px 30px #173a6515}.sf-product b{display:block;font-size:13px;margin-bottom:6px}.sf-product span{font-size:11px;line-height:1.45;color:var(--sf-muted)}
+.sf-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:13px}.sf-stat{padding:21px;border-radius:18px;background:linear-gradient(145deg,#081a33,#123d72);color:#fff;box-shadow:0 17px 35px #081a3328;min-height:125px}.sf-stat:nth-child(2){background:linear-gradient(145deg,#0757c8,#1786ff)}.sf-stat:nth-child(3){background:linear-gradient(145deg,#a91620,#e5232d)}.sf-stat:nth-child(4){background:linear-gradient(145deg,#263e5c,#5b7596)}.sf-stat strong{display:block;font-size:28px;font-weight:1000}.sf-stat small{display:block;margin-top:8px;opacity:.8;font-size:10px;line-height:1.45}.sf-about{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:stretch}.sf-panel{padding:27px;border-radius:22px;background:#fff;border:1px solid #dbe6f4;box-shadow:12px 18px 35px #173a6510}.sf-panel h3{margin:0 0 10px;font-size:20px}.sf-panel p{margin:0;color:var(--sf-muted);font-size:13px;line-height:1.7}.sf-list{margin:17px 0 0;padding:0;list-style:none;display:grid;gap:10px}.sf-list li{font-size:12px;color:#33465f;display:flex;gap:9px}.sf-list li:before{content:'✓';font-weight:1000;color:#21a866}.sf-cta{margin:0 auto 75px;width:min(1120px,calc(100% - 28px));padding:34px;border-radius:26px;background:linear-gradient(120deg,#0757c8,#123d72 55%,#e5232d);color:#fff;display:flex;justify-content:space-between;gap:20px;align-items:center;box-shadow:0 25px 55px #0757c82e}.sf-cta h2{font-size:clamp(25px,4vw,39px);margin:0 0 7px}.sf-cta p{margin:0;opacity:.82;font-size:13px}.sf-cta .sf-btn{background:#fff;color:#0757c8}.sf-footer{padding:30px 14px 44px;border-top:1px solid #dce7f5;background:#fff;text-align:center;color:#6b7b91;font-size:10px;line-height:1.7}.sf-footer b{color:#213b5c}
+@keyframes sfFloat{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(0,-18px,0)}}@keyframes sfScene{0%,100%{transform:rotateY(-2deg) rotateX(1deg) translateY(0)}50%{transform:rotateY(3deg) rotateX(-1deg) translateY(-7px)}}
+@media(max-width:800px){.sf-navlinks a:nth-child(n+4){display:none}.sf-hero{min-height:auto;padding:58px 14px 55px}.sf-hero-inner{grid-template-columns:1fr;gap:20px}.sf-title{letter-spacing:-2px}.sf-scene{height:330px;order:2}.sf-card3d{width:280px}.sf-shortcuts{grid-template-columns:1fr}.sf-products{grid-template-columns:repeat(2,1fr)}.sf-stats{grid-template-columns:repeat(2,1fr)}.sf-about{grid-template-columns:1fr}.sf-cta{flex-direction:column;align-items:flex-start}}
+@media(max-width:480px){.sf-nav{padding:10px 12px}.sf-brand{font-size:12px}.sf-mark{width:34px;height:34px}.sf-navlinks a{font-size:10px;padding:7px 8px}.sf-title{font-size:42px}.sf-lead{font-size:14px}.sf-scene{height:285px}.sf-card3d{width:245px;padding:18px}.sf-big{font-size:26px}.sf-float{font-size:9px}.sf-products{grid-template-columns:1fr}.sf-stats{grid-template-columns:1fr 1fr}.sf-stat strong{font-size:23px}.sf-section{padding:58px 0}.sf-cta{padding:25px}}
+</style>
+
+<div class="sf-site" id="sfHome">
+  <nav class="sf-nav">
+    <a class="sf-brand" href="#sfHome" style="text-decoration:none;color:inherit"><span class="sf-mark"></span><span>SUMRUDRA FINANCE</span></a>
+    <div class="sf-navlinks"><a href="#sfCalculators">Calculators</a><a href="#sfProducts">Products</a><a href="#sfReach">Reach</a><a href="#sfAbout">About</a></div>
+  </nav>
+
+  <section class="sf-hero">
+    <div class="sf-hero-bg"><div class="sf-grid"></div><div class="sf-orb one"></div><div class="sf-orb two"></div></div>
+    <div class="sf-hero-inner">
+      <div>
+        <span class="sf-kicker"><i></i> DIGITAL LOAN ASSISTANCE & CALCULATORS</span>
+        <h1 class="sf-title">Finance made <span>simpler.</span></h1>
+        <p class="sf-lead">Explore smart loan calculators, understand your borrowing capacity, compare loan options and connect with loan assistance through Sumrudra Finance.</p>
+        <div class="sf-actions"><a class="sf-btn primary" href="#sfCalculators">Explore Calculators →</a><a class="sf-btn secondary" href="#sfProducts">View Loan Products</a></div>
+      </div>
+      <div class="sf-scene">
+        <div class="sf-card3d back"><div class="sf-chip">LOAN PLANNING</div><div class="sf-big">Smart Decisions</div><div class="sf-mini">Compare EMI, interest and repayment before choosing a loan.</div></div>
+        <div class="sf-card3d main"><div class="sf-chip">SUMRUDRA FINANCE</div><div class="sf-big">₹ EMI Planner</div><div class="sf-mini">Eligibility • EMI • Affordability • Home Loan • Loan Comparison</div><div class="sf-bar"><span></span></div></div>
+        <div class="sf-card3d bottom"><div class="sf-chip">MULTI-TASKING LOAN CALCULATOR</div><div class="sf-big">5 Tools</div><div class="sf-mini">One place for practical loan calculations.</div></div>
+        <div class="sf-float one">⚡ Fast calculations</div><div class="sf-float two">🏦 Multiple loan solutions</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sf-section" id="sfCalculators">
+    <div class="sf-section-head"><div class="sf-eyebrow">Smart tools</div><h2 class="sf-h2">Your Loan Calculator Hub</h2><p>Use the calculator suite to understand eligibility, EMI, affordability, home-loan capacity and the difference between two loan options.</p></div>
+    <div class="sf-shortcuts">
+      <button class="sf-short" type="button" onclick="openCalc('eligibility')"><div class="sf-icon">🧮</div><div class="sf-arrow">↗</div><h3>Multi-Tasking Loan Calculator</h3><p>Access Eligibility, Basic EMI, Affordability, Home Loan and Compare Your Loan tools from one place.</p></button>
+      <button class="sf-short" type="button" onclick="openCalc('homeLoan')"><div class="sf-icon">🏠</div><div class="sf-arrow">↗</div><h3>Home Loan Calculator</h3><p>Check property-based limits, income eligibility, FOIR and eligible EMI with the dedicated home-loan tool.</p></button>
+      <button class="sf-short" type="button" onclick="openCalc('compare')"><div class="sf-icon">📊</div><div class="sf-arrow">↗</div><h3>Compare Your Loan</h3><p>Compare EMI, interest and total repayment across two loan scenarios.</p></button>
+    </div>
+  </section>
+
+  <section class="sf-section" id="sfProducts">
+    <div class="sf-section-head"><div class="sf-eyebrow">Product portfolio</div><h2 class="sf-h2">Loan Products Offered</h2><p>Loan assistance across retail, property, vehicle and business requirements, subject to lender eligibility, policy and approval.</p></div>
+    <div class="sf-products">
+      <div class="sf-product"><b>Personal Loan</b><span>Unsecured personal finance for eligible salaried and self-employed customers.</span></div>
+      <div class="sf-product"><b>Home Loan</b><span>Home purchase and housing finance assistance for eligible borrowers.</span></div>
+      <div class="sf-product"><b>Loan Against Property</b><span>Property-backed funding solutions subject to lender policy and property assessment.</span></div>
+      <div class="sf-product"><b>Car Loan</b><span>New and used vehicle finance assistance.</span></div>
+      <div class="sf-product"><b>Unsecured Overdraft</b><span>Working-capital style unsecured overdraft assistance for eligible profiles.</span></div>
+      <div class="sf-product"><b>Secured Overdraft</b><span>Secured overdraft solutions against acceptable collateral.</span></div>
+      <div class="sf-product"><b>Business Loan</b><span>Business finance assistance, including eligible daily-instalment structures.</span></div>
+      <div class="sf-product"><b>Used Car Loan</b><span>Finance assistance for eligible pre-owned vehicle purchases.</span></div>
+    </div>
+  </section>
+
+  <section class="sf-section" id="sfReach">
+    <div class="sf-section-head"><div class="sf-eyebrow">Reach & service</div><h2 class="sf-h2">Built for Better Loan Access</h2><p>Sumrudra Finance is building a wider service network while using digital tools to make loan planning easier for customers.</p></div>
+    <div class="sf-stats">
+      <div class="sf-stat"><strong>8+</strong><small>Branch locations represented in the current Sumrudra Finance expansion plan.</small></div>
+      <div class="sf-stat"><strong>Delhi NCR</strong><small>Current service focus with expanding reach across nearby markets.</small></div>
+      <div class="sf-stat"><strong>Loan Support</strong><small>Assistance across personal, property, vehicle and business finance categories.</small></div>
+      <div class="sf-stat"><strong>Digital First</strong><small>Online calculators designed to help customers plan before applying.</small></div>
+    </div>
+  </section>
+
+  <section class="sf-section" id="sfAbout">
+    <div class="sf-about">
+      <div class="sf-panel"><h3>About Sumrudra Finance</h3><p><b>Sumrudra Finance</b> is the brand associated with <b>Sumrudra Distribution and Services Private Limited</b>, providing loan distribution and financial-service assistance through lender relationships and customer-focused support.</p><ul class="sf-list"><li>Digital loan calculation and planning tools</li><li>Multiple retail and secured/unsecured loan categories</li><li>Customer assistance from requirement to loan processing</li><li>Service expansion through a growing branch network</li></ul></div>
+      <div class="sf-panel"><h3>Service Promise</h3><p>Our digital tools are designed to make the first step easier: understand your numbers, compare options and then connect with the appropriate loan-assistance channel.</p><ul class="sf-list"><li>Transparent calculator-based planning</li><li>Simple, mobile-friendly experience</li><li>Multiple loan products in one platform</li><li>Support for eligible customers subject to lender policy</li></ul></div>
+    </div>
+  </section>
+
+  
+<section class="sf-contact" id="sfContact">
+  <div class="sf-contact-inner">
+    <div>
+      <div class="sf-eyebrow">Contact us</div>
+      <h2>Need Loan Assistance?</h2>
+      <p>Call or WhatsApp Sumrudra Finance for loan assistance, eligibility support and calculator guidance.</p>
+      <div class="sf-contact-numbers">
+        <a href="tel:8882543198">📞 8882543198</a>
+        <a href="tel:9899088269">📞 9899088269</a>
+      </div>
+    </div>
+    <div class="sf-contact-actions">
+      <a href="tel:8882543198">Call Us</a>
+      <a href="https://wa.me/918882543198" target="_blank" rel="noopener">WhatsApp</a>
+    </div>
+  </div>
+</section>
+
+<section class="sf-cta"><div><h2>Plan your loan before you apply.</h2><p>Start with the Sumrudra Finance calculator suite.</p></div><button class="sf-btn" type="button" onclick="openCalc('eligibility')">Open Calculators →</button></section>
+  <footer class="sf-footer"><b>SUMRUDRA FINANCE</b> • Brand associated with Sumrudra Distribution and Services Private Limited<br>Registered office: C-17 G/F, Guru Nanak Pura, Laxmi Nagar, New Delhi, Delhi 110092<br><br>Loan availability, interest rates, fees, tenure, approval and disbursement are subject to applicable lender policy, eligibility, documentation and final approval. Calculator results are indicative and do not constitute a loan sanction.</footer>
+</div>
+
+<header class="header">
+  <div class="brand">SUMRUDRA<span>FINANCE</span> • EMI CALCULATION</div>
+  <div class="tag">Smart loan planning • Simple • Fast • Professional</div>
+</header>
+
+<main id="app">
+<section class="landing" id="landingPage">
+  <div class="landing-inner">
+    <div class="landing-title">Smart Loan Calculators</div>
+    <p class="landing-sub">Choose the calculator that matches your requirement.</p>
+    <div class="calc-menu">
+      <button class="calc-choice" onclick="openCalc('eligibility')"><span class="calc-num">01</span><span class="calc-info"><span class="calc-name">Eligibility Calculator</span><span class="calc-desc">Check eligibility using salary, FOIR and existing obligations</span></span><span class="calc-arrow">›</span></button>
+      <button class="calc-choice" onclick="openCalc('emi')"><span class="calc-num">02</span><span class="calc-info"><span class="calc-name">Basic EMI Calculator</span><span class="calc-desc">Calculate EMI, total interest and total repayment</span></span><span class="calc-arrow">›</span></button>
+      <button class="calc-choice" onclick="openCalc('affordability')"><span class="calc-num">03</span><span class="calc-info"><span class="calc-name">Loan Affordability Calculator</span><span class="calc-desc">Estimate the loan amount you can afford</span></span><span class="calc-arrow">›</span></button>
+      <button class="calc-choice" onclick="openCalc('homeLoan')"><span class="calc-num">04</span><span class="calc-info"><span class="calc-name">Home Loan Calculator</span><span class="calc-desc">Check property value, LTV, FOIR and income eligibility</span></span><span class="calc-arrow">›</span></button>
+      <button class="calc-choice" onclick="openCalc('compare')"><span class="calc-num">05</span><span class="calc-info"><span class="calc-name">Compare Your Loan</span><span class="calc-desc">Compare EMI, interest and total repayment for two loans</span></span><span class="calc-arrow">›</span></button>
+    </div>
+    <div class="landing-brand">SUMRUDRA FINANCE • Brand of Sumrudra Distribution and Services Private Limited</div>
+  </div>
+</section>
+
+<section class="app-view" id="calculatorView">
+  <div class="backbar"><button class="back-btn" type="button" onclick="goHome()">← Back to Home</button></div>
+  <div class="view-title">Sumrudra Finance <span>EMI Calculation</span></div>
+
+<section class="calc-panel" id="eligibility">
+<h2>Eligibility Calculator</h2><div class="sub">Calculate available EMI capacity using salary, FOIR and existing obligations.</div>
+<div class="grid">
+<div class="field"><label>Net Monthly Salary</label><div class="inputwrap"><span class="prefix">₹</span><input id="salary" type="number" value="" placeholder="0" min="0"></div></div>
+<div class="field"><label>FOIR / EMI Capacity</label><div class="inputwrap"><input id="foir" type="number" value="" placeholder="0" min="0" max="100"><span class="suffix">%</span></div></div>
+<div class="section-title">EXISTING OBLIGATIONS</div>
+<div class="field"><label>Personal Loan EMI</label><div class="inputwrap"><span class="prefix">₹</span><input id="pl" type="number" value="" placeholder="0"></div></div>
+<div class="field"><label>Car Loan EMI</label><div class="inputwrap"><span class="prefix">₹</span><input id="car" type="number" value="" placeholder="0"></div></div>
+<div class="field"><label>Credit Card Outstanding</label><div class="inputwrap"><span class="prefix">₹</span><input id="cc" type="number" value="" placeholder="0"></div><div class="cc-note">Only 5% of the outstanding amount is considered as monthly obligation.</div></div>
+<div class="field"><label>Home Loan EMI</label><div class="inputwrap"><span class="prefix">₹</span><input id="home" type="number" value="" placeholder="0"></div></div>
+</div>
+<button onclick="eligibility()">Calculate EMI Eligibility</button><div class="result" id="eligResult"></div>
+<div class="benefits" id="eligBenefits"><div class="benefits-title">YOUR CALCULATION BENEFITS</div><div class="benefit-grid"><div class="benefit blue"><b>Available EMI</b><span id="eligBenefitEmi">Calculate to see your available EMI.</span></div><div class="benefit red"><b>Existing Obligations</b><span id="eligBenefitObligations">Your current obligations will appear here.</span></div><div class="benefit green"><b>Eligibility Insight</b><span id="eligBenefitInsight">Your income and FOIR determine your available EMI capacity.</span></div></div></div>
+</section>
+
+<section class="calc-panel" id="emi">
+<h2>Basic EMI Calculator</h2><div class="sub">Calculate EMI, total interest and total repayment.</div>
+<div class="grid">
+<div class="field"><label>Loan Amount</label><div class="inputwrap"><span class="prefix">₹</span><input id="amount" type="number" value="" placeholder="0"></div></div>
+<div class="field"><label>Annual Interest Rate</label><div class="inputwrap"><input id="rate" type="number" value="" placeholder="0" step="0.01"><span class="suffix">%</span></div></div>
+<div class="field"><label>Tenure</label><div class="inputwrap"><input id="tenure" type="number" value="" placeholder="0"></div></div>
+<div class="field"><label>Unit</label><select id="unit"><option value="years">Years</option><option value="months">Months</option></select></div>
+</div>
+<button onclick="basicEMI()">Calculate EMI</button><div class="result" id="emiResult"></div>
+<div class="benefits" id="emiBenefits"><div class="benefits-title">YOUR EMI INSIGHTS</div><div class="benefit-grid"><div class="benefit blue"><b>Monthly EMI</b><span id="emiBenefitMonthly">Calculate to see your monthly EMI.</span></div><div class="benefit red"><b>Total Interest</b><span id="emiBenefitInterest">Your total interest will appear here.</span></div><div class="benefit green"><b>Planning Insight</b><span id="emiBenefitInsight">A shorter tenure may reduce total interest, while a longer tenure may reduce monthly EMI.</span></div></div></div>
+</section>
+
+<section class="calc-panel" id="affordability">
+<h2>Loan Affordability Calculator</h2><div class="sub">Start from an affordable EMI and estimate the loan amount.</div>
+<div class="grid">
+<div class="field"><label>Affordable EMI / Month</label><div class="inputwrap"><span class="prefix">₹</span><input id="affEmi" type="number" value="" placeholder="0"></div></div>
+<div class="field"><label>Expected Interest Rate</label><div class="inputwrap"><input id="affRate" type="number" value="" placeholder="0" step="0.01"><span class="suffix">%</span></div></div>
+<div class="field"><label>Tenure</label><div class="inputwrap"><input id="affTenure" type="number" value="" placeholder="0"></div></div>
+<div class="field"><label>Unit</label><select id="affUnit"><option value="years">Years</option><option value="months">Months</option></select></div>
+</div>
+<button onclick="affordability()">Calculate Affordable Loan</button><div class="result" id="affResult"></div>
+<div class="benefits" id="affBenefits"><div class="benefits-title">YOUR AFFORDABILITY INSIGHTS</div><div class="benefit-grid"><div class="benefit blue"><b>Estimated Loan</b><span id="affBenefitLoan">Calculate to see your estimated loan amount.</span></div><div class="benefit red"><b>Monthly Commitment</b><span id="affBenefitEmi">Your selected affordable EMI will appear here.</span></div><div class="benefit green"><b>Planning Insight</b><span id="affBenefitInsight">Rate and tenure both affect the loan amount you can afford.</span></div></div></div>
+</section>
+
+
+<section class="calc-panel" id="homeLoan">
+<div class="card">
+<h2>Home Loan Calculator</h2><div class="sub">Calculate property-based eligibility and monthly EMI.</div>
+<div class="grid">
+<div class="field"><label>Property Value <span style="color:#8794a8;font-weight:500">(Market Value)</span></label><div class="inputwrap"><span class="prefix">₹</span><input id="hlProperty" type="number" value="" placeholder="0"></div></div>
+<div class="field"><label>LTV <span style="color:#8794a8;font-weight:500">(% of Property Value Eligible)</span></label><div class="inputwrap"><input id="hlLtv" type="number" value="" placeholder="0"><span class="suffix">%</span></div></div>
+</div>
+<div class="home-highlight"><div class="small">You are Eligible for loan upto property market value / LTV</div><div class="big" id="propertyEligible">₹0</div></div>
+<div class="grid">
+<div class="section-title">HOME LOAN DETAILS</div>
+<div class="field"><label>Loan Amount <span style="color:#8794a8;font-weight:500">(Up to eligible property value)</span></label><div class="inputwrap"><span class="prefix">₹</span><input id="hlLoan" type="number" value="" placeholder="0"></div></div>
+<div class="field"><label>Rate of Interest</label><div class="inputwrap"><input id="hlRate" type="number" value="" placeholder="0" step="0.01"><span class="suffix">%</span></div></div>
+<div class="field"><label>Tenure</label><div class="inputwrap"><input id="hlTenure" type="number" value="" placeholder="0"></div></div>
+<div class="field"><label>Tenure Unit</label><select id="hlUnit"><option value="years">Years</option><option value="months">Months</option></select></div>
+</div>
+<div class="emi-result">Home Loan EMI: <strong id="hlEmi">₹0</strong></div>
+</div>
+
+<div class="card">
+<h2>Check Your Income Eligibility for Loan</h2><div class="sub">Check your EMI capacity after existing obligations.</div>
+<div class="grid">
+<div class="field"><label>Net Monthly Salary</label><div class="inputwrap"><span class="prefix">₹</span><input id="hlSalary" type="number" value="" placeholder="0"></div></div>
+<div class="field"><label>FOIR / EMI Capacity</label><div class="inputwrap"><input id="hlFoir" type="number" value="" placeholder="0"><span class="suffix">%</span></div></div>
+<div class="section-title">EXISTING OBLIGATIONS</div>
+<div class="field"><label>Personal Loan EMI</label><div class="inputwrap"><span class="prefix">₹</span><input id="hlPL" type="number" value="" placeholder="0"></div></div>
+<div class="field"><label>Car Loan EMI</label><div class="inputwrap"><span class="prefix">₹</span><input id="hlCar" type="number" value="" placeholder="0"></div></div>
+<div class="field"><label>Credit Card Outstanding</label><div class="inputwrap"><span class="prefix">₹</span><input id="hlCC" type="number" value="" placeholder="0"></div><div class="cc-note">Only 5% of the outstanding amount is considered as monthly obligation.</div></div>
+<div class="field"><label>Home Loan EMI</label><div class="inputwrap"><span class="prefix">₹</span><input id="hlHome" type="number" value="" placeholder="0"></div></div>
+</div>
+<button onclick="checkHomeIncome()">Check Income Eligibility</button>
+<div class="home-highlight" style="margin-bottom:0">
+  <div class="small">Eligible EMI after existing obligations</div>
+  <div class="big" id="hlEligibleEmi">₹0</div>
+</div>
+<div class="status" id="hlStatus"></div>
+
+<!-- This section is shown ONLY when income eligibility exists -->
+<div id="hlEligibleOptions" style="display:none !important">
+  <div class="card" style="margin:14px 0 0;padding:16px;background:#fbfdff">
+    <h2 style="font-size:18px">Home Loan Eligibility</h2>
+    <div class="sub">Enter a Preferred EMI up to your eligible EMI, then enter the new rate and tenure.</div>
+    <div class="field">
+      <label>Preferred EMI <span style="color:#8794a8;font-weight:500">(Not more than Eligible EMI)</span></label>
+      <div class="inputwrap"><span class="prefix">₹</span><input id="hlPreferredEmi" type="number" value="" placeholder="0"></div>
+      <div class="input-error" id="hlPreferredError">Please choose a value less than or equal to Eligible EMI.</div>
+    </div>
+    <div class="grid" style="margin-top:12px">
+      <div class="field"><label>New Rate of Interest</label><div class="inputwrap"><input id="hlIncomeRate" type="number" value="" placeholder="0" step="0.01"><span class="suffix">%</span></div></div>
+      <div class="field"><label>New Tenure</label><div class="inputwrap"><input id="hlIncomeTenure" type="number" value="" placeholder="0"></div></div>
+      <div class="field"><label>Tenure Unit</label><select id="hlIncomeUnit"><option value="years">Years</option><option value="months">Months</option></select></div>
+    </div>
+    <button class="red" onclick="calculateHomeIncomeLoan()">Calculate Eligible Loan Amount</button>
+    <div class="result" id="hlLoanResult"></div>
+  </div>
+
+  <div class="close-box" id="hlIncreaseBox">
+    <h3>DO YOU WANT TO INCREASE YOUR ELIGIBILITY BY CLOSING SOME OF YOUR LOANS?</h3>
+    <div class="hint">Reduce Personal Loan EMI, Car Loan EMI or Home Loan EMI directly. For Credit Card, only 5% of the outstanding amount is counted as monthly obligation. Reducing the outstanding by an amount reduces the obligation by 5% of that reduction.</div>
+    <div class="grid">
+      <div class="field"><label>Personal Loan EMI to Reduce</label><div class="inputwrap"><span class="prefix">₹</span><input id="reducePL" type="number" value="" placeholder="0"></div></div>
+      <div class="field"><label>Car Loan EMI to Reduce</label><div class="inputwrap"><span class="prefix">₹</span><input id="reduceCar" type="number" value="" placeholder="0"></div></div>
+      <div class="field"><label>Credit Card Amount to Reduce</label><div class="inputwrap"><span class="prefix">₹</span><input id="reduceCC" type="number" value="" placeholder="0"></div></div>
+      <div class="field"><label>Home Loan EMI to Reduce</label><div class="inputwrap"><span class="prefix">₹</span><input id="reduceHome" type="number" value="" placeholder="0"></div></div>
+    </div>
+    <button onclick="recheckAfterClosure()">Recalculate Eligibility After Loan Reduction</button>
+    <div class="result" id="hlClosureResult"></div>
+  </div>
+</div>
+
+<!-- This section is shown ONLY when income eligibility is zero -->
+<div class="close-box" id="hlNonEligibleBox" style="display:none">
+  <h3>DO YOU WANT TO CLOSE SOME LOAN TO BE ELIGIBLE?</h3>
+  <div class="hint">Your current obligations are high. Enter the amount/EMI you plan to reduce and check your eligibility again.</div>
+  <div class="grid">
+    <div class="field"><label>Personal Loan EMI to Reduce</label><div class="inputwrap"><span class="prefix">₹</span><input id="reducePLNon" type="number" value="" placeholder="0"></div></div>
+    <div class="field"><label>Car Loan EMI to Reduce</label><div class="inputwrap"><span class="prefix">₹</span><input id="reduceCarNon" type="number" value="" placeholder="0"></div></div>
+    <div class="field"><label>Credit Card Amount to Reduce</label><div class="inputwrap"><span class="prefix">₹</span><input id="reduceCCNon" type="number" value="" placeholder="0"></div></div>
+    <div class="field"><label>Home Loan EMI to Reduce</label><div class="inputwrap"><span class="prefix">₹</span><input id="reduceHomeNon" type="number" value="" placeholder="0"></div></div>
+  </div>
+  <button onclick="recheckAfterClosureNon()">Recalculate After Loan Closure</button>
+  <div class="result" id="hlClosureResultNon"></div>
+</div>
+</div>
+<div class="benefits" id="homeBenefits"><div class="benefits-title">YOUR HOME LOAN INSIGHTS</div><div class="benefit-grid"><div class="benefit blue"><b>Property-Based Eligibility</b><span id="homeBenefitProperty">Enter property value and LTV to see the property-based eligibility.</span></div><div class="benefit red"><b>Income-Based Eligibility</b><span id="homeBenefitIncome">Complete your income eligibility to see the estimated loan amount.</span></div><div class="benefit green"><b>Eligibility Improvement</b><span id="homeBenefitImprovement">Reducing existing obligations can increase your eligible EMI capacity.</span></div></div></div>
+</section>
+
+<section class="calc-panel" id="compare">
+<h2>Compare Your Loan</h2><div class="sub">Compare two offers on EMI, interest and total repayment.</div>
+<div class="compare">
+<div class="option"><h3>OPTION A</h3>
+<div class="field"><label>Loan Amount</label><div class="inputwrap"><span class="prefix">₹</span><input id="aAmount" type="number" value="" placeholder="0"></div></div>
+<div class="field"><label>Interest Rate</label><div class="inputwrap"><input id="aRate" type="number" value="" placeholder="0" step="0.01"><span class="suffix">%</span></div></div>
+<div class="field"><label>Tenure</label><div class="inputwrap"><input id="aTenure" type="number" value="" placeholder="0"></div></div>
+<select id="aUnit"><option value="years">Years</option><option value="months">Months</option></select></div>
+<div class="option"><h3>OPTION B</h3>
+<div class="field"><label>Loan Amount</label><div class="inputwrap"><span class="prefix">₹</span><input id="bAmount" type="number" value="" placeholder="0"></div></div>
+<div class="field"><label>Interest Rate</label><div class="inputwrap"><input id="bRate" type="number" value="" placeholder="0" step="0.01"><span class="suffix">%</span></div></div>
+<div class="field"><label>Tenure</label><div class="inputwrap"><input id="bTenure" type="number" value="" placeholder="0"></div></div>
+<select id="bUnit"><option value="years">Years</option><option value="months">Months</option></select></div>
+</div>
+<button class="red" onclick="compareLoans()">Compare Loans</button><div class="result" id="compareResult"></div>
+<div class="benefits" id="compareBenefits"><div class="benefits-title">YOUR LOAN COMPARISON BENEFITS</div><div class="benefit-grid"><div class="benefit blue"><b>Monthly EMI Difference</b><span id="compareBenefitEmi">Compare both options to see the difference.</span></div><div class="benefit red"><b>Interest Difference</b><span id="compareBenefitInterest">Your potential interest difference will appear here.</span></div><div class="benefit green"><b>Total Repayment Insight</b><span id="compareBenefitTotal">Compare both options to understand the total repayment impact.</span></div></div></div>
+</section>
+
+<div class="note">Planning calculator only. Actual eligibility, rate, fees, lender policy and sanction are subject to lender assessment and terms.</div>
+
+<div class="calculator-contact">
+  <div><h3>Need Loan Assistance?</h3><p>Contact us by call or WhatsApp.</p></div>
+  <div class="calculator-contact-actions">
+    <a href="tel:8882543198">Call 8882543198</a>
+    <a href="tel:9899088269">Call 9899088269</a>
+    <a href="https://wa.me/918882543198" target="_blank" rel="noopener">WhatsApp</a>
+  </div>
+</div>
+</section>
+</main>
+<footer class="footer">SUMRUDRA FINANCE • Brand of Sumrudra Distribution and Services Private Limited</footer>
+
+<script>
+function openCalc(id){
+  const panel=document.getElementById(id);
+  const calculatorView=document.getElementById('calculatorView');
+  if(!panel || !calculatorView) return;
+
+  document.body.classList.add('calculator-mode');
+  document.getElementById('sfHome').style.display='none';
+  document.getElementById('app').style.display='block';
+  calculatorView.classList.add('active');
+  document.querySelectorAll('.calc-panel').forEach(x=>x.classList.remove('active'));
+  panel.classList.add('active');
+  window.scrollTo(0,0);
+}
+function goHome(){
+  document.body.classList.remove('calculator-mode');
+  document.querySelectorAll('.calc-panel').forEach(x=>x.classList.remove('active'));
+  document.getElementById('calculatorView').classList.remove('active');
+  document.getElementById('app').style.display='none';
+  document.getElementById('sfHome').style.display='block';
+  window.scrollTo(0,0);
+}
+
+/* Zero is displayed as a placeholder. User can type immediately without selecting/deleting 0. */
+document.querySelectorAll('input[type=number]').forEach(input=>{
+  input.addEventListener('blur',function(){
+    if(this.value.trim()==='') this.value='';
+  });
+});
+const n=id=>parseFloat(document.getElementById(id).value)||0;
+const money=x=>'₹'+Math.round(x).toLocaleString('en-IN');
+function calcEMI(P,r,months){
+  if(!P||!months) return 0;
+  const m=r/12/100;
+  return m===0?P:P*m*Math.pow(1+m,months)/(Math.pow(1+m,months)-1);
+}
+function show(id,html){const e=document.getElementById(id);e.innerHTML=html;e.style.display='block'}
+function setBenefit(id,text){
+  const e=document.getElementById(id);
+  if(e) e.textContent=text;
+}
+function eligibility(){
+  const salary=n('salary'), foir=n('foir'), creditCardObligation=n('cc')*0.05, obligations=n('pl')+n('car')+creditCardObligation+n('home');
+  const max=Math.max(0,salary*foir/100-obligations);
+  show('eligResult',`Maximum available EMI: <strong>${money(max)}</strong><br><small>Salary × FOIR − existing obligations (Credit Card = 5% of outstanding)</small>`);
+  setBenefit('eligBenefitEmi',`You have approximately ${money(max)} of available EMI capacity.`);
+  setBenefit('eligBenefitObligations',`Your entered existing obligations total ${money(obligations)} per month, including ${money(creditCardObligation)} (5% of ${money(n('cc'))}) from your credit card outstanding.`);
+  setBenefit('eligBenefitInsight',max>0?`You may have room for an additional EMI of up to ${money(max)}, subject to lender assessment.`:`Your current obligations use your available FOIR capacity. Reducing obligations may improve eligibility.`);
+}
+function basicEMI(){
+  const P=n('amount'), r=n('rate'), months=n('tenure')*(document.getElementById('unit').value==='years'?12:1);
+  const emi=calcEMI(P,r,months), total=emi*months, interest=Math.max(0,total-P);
+  show('emiResult',`Monthly EMI: <strong>${money(emi)}</strong><br>Total Interest: ${money(interest)}<br>Total Repayment: ${money(total)}`);
+  setBenefit('emiBenefitMonthly',`Your estimated monthly payment is ${money(emi)}.`);
+  setBenefit('emiBenefitInterest',`You would pay approximately ${money(interest)} in total interest over the selected tenure.`);
+  setBenefit('emiBenefitInsight',`A shorter tenure can reduce total interest, while a longer tenure can reduce the monthly EMI.`);
+}
+function affordability(){
+  const emi=n('affEmi'), r=n('affRate'), months=n('affTenure')*(document.getElementById('affUnit').value==='years'?12:1);
+  const m=r/12/100, P=m===0?emi*months:emi*(1-Math.pow(1+m,-months))/m;
+  show('affResult',`Estimated Affordable Loan: <strong>${money(P)}</strong><br>Total EMI payout: ${money(emi*months)}`);
+  setBenefit('affBenefitLoan',`At your selected EMI, rate and tenure, the estimated loan amount is ${money(P)}.`);
+  setBenefit('affBenefitEmi',`Your planned monthly EMI commitment is ${money(emi)}.`);
+  setBenefit('affBenefitInsight',`Changing the rate or tenure can materially change the loan amount you can afford.`);
+}
+function offer(amount,rate,tenure,unit){
+  const months=tenure*(unit==='years'?12:1), emi=calcEMI(amount,rate,months), total=emi*months;
+  return {emi,total,interest:Math.max(0,total-amount)};
+}
+function compareLoans(){
+  const a=offer(n('aAmount'),n('aRate'),n('aTenure'),document.getElementById('aUnit').value);
+  const b=offer(n('bAmount'),n('bRate'),n('bTenure'),document.getElementById('bUnit').value);
+  show('compareResult',`<b>Option A</b> — EMI: ${money(a.emi)} | Interest: ${money(a.interest)} | Repayment: ${money(a.total)}<br><b>Option B</b> — EMI: ${money(b.emi)} | Interest: ${money(b.interest)} | Repayment: ${money(b.total)}`);
+  const emiDiff=Math.abs(a.emi-b.emi), interestDiff=Math.abs(a.interest-b.interest), totalDiff=Math.abs(a.total-b.total);
+  const emiLower=a.emi<=b.emi?'Option A':'Option B';
+  const interestLower=a.interest<=b.interest?'Option A':'Option B';
+  const totalLower=a.total<=b.total?'Option A':'Option B';
+  setBenefit('compareBenefitEmi',`${emiLower} has the lower monthly EMI by ${money(emiDiff)}.`);
+  setBenefit('compareBenefitInterest',`${interestLower} has the lower total interest by ${money(interestDiff)}.`);
+  setBenefit('compareBenefitTotal',`${totalLower} has the lower total repayment by ${money(totalDiff)}.`);
+}
+
+let hlEffectiveEligibleEmi=0;
+function hlMoney(x){return money(Math.max(0,x||0));}
+function hlMonths(v,u){return (parseFloat(v)||0)*(u==='years'?12:1);}
+function updatePropertyEligibility(){
+ const cap=n('hlProperty')*n('hlLtv')/100;
+ document.getElementById('propertyEligible').textContent=hlMoney(cap);
+ setBenefit('homeBenefitProperty', cap>0 ? `Based on the entered property value and LTV, the property-based limit is ${hlMoney(cap)}.` : 'Enter property value and LTV to see the property-based eligibility.');
+ const loan=document.getElementById('hlLoan');
+ if(cap>0 && n('hlLoan')>cap) loan.value=Math.round(cap);
+ updateHomeEmi();
+}
+function updateHomeEmi(){
+ const P=n('hlLoan'),r=n('hlRate'),m=hlMonths(n('hlTenure'),document.getElementById('hlUnit').value);
+ document.getElementById('hlEmi').textContent=hlMoney(calcEMI(P,r,m));
+}
+['hlProperty','hlLtv'].forEach(id=>document.getElementById(id).addEventListener('input',updatePropertyEligibility));
+['hlLoan','hlRate','hlTenure'].forEach(id=>document.getElementById(id).addEventListener('input',updateHomeEmi));
+document.getElementById('hlUnit').addEventListener('change',updateHomeEmi);
+
+function setHomeStatusEligible(emi){
+ hlEffectiveEligibleEmi=emi;
+ const st=document.getElementById('hlStatus');
+ st.className='status ok';st.style.display='block';
+ st.innerHTML='<h3>You are Eligible for Home Loan</h3><p>Available EMI after existing obligations: <b>'+hlMoney(emi)+'</b></p>';
+ document.getElementById('hlEligibleOptions').style.display='block';
+ document.getElementById('hlNonEligibleBox').style.display='none';
+ // Start preferred EMI blank, but never allow it above the eligible EMI.
+ const pref=document.getElementById('hlPreferredEmi');
+ if(pref && n('hlPreferredEmi')>emi) pref.value='';
+}
+
+function setHomeStatusNonEligible(){
+ hlEffectiveEligibleEmi=0;
+ const st=document.getElementById('hlStatus');
+ st.className='status bad';st.style.display='block';
+ st.innerHTML='<h3>You are Non-Eligible</h3><p>Your existing obligations are high compared with your eligible FOIR. You can close/reduce some loans to become eligible.</p>';
+ document.getElementById('hlEligibleOptions').style.display='none';
+ document.getElementById('hlNonEligibleBox').style.display='block';
+}
+
+function getCurrentEligibleEmi(){
+ const salary=n('hlSalary'),foir=n('hlFoir');
+ const obligations=n('hlPL')+n('hlCar')+n('hlCC')*.05+n('hlHome');
+ return Math.max(0,salary*foir/100-obligations);
+}
+
+function checkHomeIncome(){
+ const eligible=getCurrentEligibleEmi();
+ document.getElementById('hlEligibleEmi').textContent=hlMoney(eligible);
+ if(eligible<=0) setHomeStatusNonEligible(); else setHomeStatusEligible(eligible);
+ return eligible;
+}
+
+function validatePreferredEmi(){
+ const emi=Number(hlEffectiveEligibleEmi)||0;
+ const pref=Number(document.getElementById('hlPreferredEmi').value)||0;
+ const field=document.getElementById('hlPreferredEmi').closest('.field');
+ const err=document.getElementById('hlPreferredError');
+
+ if(emi<=0){
+   field.classList.remove('invalid');
+   err.classList.remove('show');
+   return false;
+ }
+ if(pref>emi){
+   field.classList.add('invalid');
+   err.classList.add('show');
+   err.textContent='Please write the Preferred EMI below or equal to Eligible EMI: '+hlMoney(emi);
+   return false;
+ }
+ field.classList.remove('invalid');
+ err.classList.remove('show');
+ return true;
+}
+
+document.addEventListener('input',function(e){
+ if(!e.target) return;
+
+ if(e.target.id==='hlPreferredEmi'){
+   validatePreferredEmi();
+   const emi=Number(hlEffectiveEligibleEmi)||0;
+   const pref=Number(e.target.value)||0;
+   if(pref>0 && pref<=emi){
+     const rate=Number(document.getElementById('hlIncomeRate').value)||0;
+     const ten=Number(document.getElementById('hlIncomeTenure').value)||0;
+     if(rate>0 && ten>0) calculateHomeIncomeLoan();
+   }
+ }
+ if(e.target.id==='hlIncomeRate' || e.target.id==='hlIncomeTenure'){
+   const pref=Number(document.getElementById('hlPreferredEmi').value)||0;
+   const emi=Number(hlEffectiveEligibleEmi)||0;
+   if(pref>0 && pref<=emi) calculateHomeIncomeLoan();
+ }
+});
+
+function calculateHomeIncomeLoan(){
+ const emi=Number(hlEffectiveEligibleEmi)||0;
+ document.getElementById('hlEligibleEmi').textContent=hlMoney(emi);
+
+ if(emi<=0){
+   setHomeStatusNonEligible();
+   return;
+ }
+
+ if(!validatePreferredEmi()) return;
+
+ const pref=Number(document.getElementById('hlPreferredEmi').value)||0;
+ const use=pref; // preferred EMI is required for the final calculation
+ const rate=Number(document.getElementById('hlIncomeRate').value)||0;
+ const months=hlMonths(document.getElementById('hlIncomeTenure').value,
+                         document.getElementById('hlIncomeUnit').value);
+
+ if(use<=0 || rate<=0 || months<=0){
+   document.getElementById('hlLoanResult').style.display='none';
+   return;
+ }
+
+ const propertyCap=n('hlProperty')*n('hlLtv')/100;
+ const unitEMI=calcEMI(1,rate,months);
+ const incomeLoan=unitEMI>0 ? use/unitEMI : 0;
+
+ const result=document.getElementById('hlLoanResult');
+ result.style.display='block';
+ setBenefit('homeBenefitProperty', propertyCap>0 ? `Based on the entered property value and LTV, the property-based limit is ${hlMoney(propertyCap)}.` : 'Enter property value and LTV to see the property-based eligibility.');
+ setBenefit('homeBenefitIncome', `Based on your preferred EMI, rate and tenure, the income-based estimated loan amount is ${hlMoney(incomeLoan)}.`);
+ setBenefit('homeBenefitImprovement', `Reducing eligible existing obligations can increase your available EMI capacity and may improve income-based eligibility.`);
+
+ if(propertyCap>0 && incomeLoan>propertyCap){
+   result.innerHTML=
+     '<div style="font-size:13px;color:#66758a;margin-bottom:5px">You Are Eligible For Loan Upto:</div>'+
+     '<strong style="font-size:27px;color:#0757c8">'+hlMoney(incomeLoan)+'</strong>'+
+     '<div style="margin-top:13px;padding-top:12px;border-top:1px solid #dce5f0;font-size:13px;color:#66758a">'+
+     '<b>As per your current Property Value, your loan amount can be:</b><br>'+
+     '<strong style="font-size:22px;color:#e5232d">'+hlMoney(propertyCap)+'</strong>'+
+     '<br><small>As per LTV value</small></div>';
+ }else if(propertyCap>0){
+   result.innerHTML=
+     '<div style="font-size:13px;color:#66758a;margin-bottom:5px">You Are Eligible For Loan Upto:</div>'+
+     '<strong style="font-size:27px;color:#0757c8">'+hlMoney(incomeLoan)+'</strong>';
+ }else{
+   result.innerHTML=
+     '<div style="font-size:13px;color:#66758a;margin-bottom:5px">You Are Eligible For Loan Upto:</div>'+
+     '<strong style="font-size:27px;color:#0757c8">'+hlMoney(incomeLoan)+'</strong>';
+ }
+}
+
+function recheckAfterClosure(){
+ const salary=n('hlSalary'),foir=n('hlFoir');
+ const old=n('hlPL')+n('hlCar')+n('hlCC')*.05+n('hlHome');
+ const reduction=n('reducePL')+n('reduceCar')+n('reduceCC')*.05+n('reduceHome');
+ const eligible=Math.max(0,salary*foir/100-(old-reduction));
+ document.getElementById('hlEligibleEmi').textContent=hlMoney(eligible);
+ const r=document.getElementById('hlClosureResult');r.style.display='block';
+ if(eligible<=0){r.innerHTML='<b>Still Non-Eligible.</b><br>New eligible EMI: '+hlMoney(eligible);return;}
+ setHomeStatusEligible(eligible);
+ const pf=document.getElementById('hlPreferredEmi');
+ if(pf) pf.value='';
+ validatePreferredEmi();
+ r.innerHTML='<b>Your eligibility has increased.</b><br>New eligible EMI: <strong>'+hlMoney(eligible)+'</strong><br><small>Credit Card obligation is calculated at 5% of outstanding.</small>';
+}
+
+function recheckAfterClosureNon(){
+ const salary=n('hlSalary'),foir=n('hlFoir');
+ const old=n('hlPL')+n('hlCar')+n('hlCC')*.05+n('hlHome');
+ const reduction=n('reducePLNon')+n('reduceCarNon')+n('reduceCCNon')*.05+n('reduceHomeNon');
+ const eligible=Math.max(0,salary*foir/100-(old-reduction));
+ document.getElementById('hlEligibleEmi').textContent=hlMoney(eligible);
+ const r=document.getElementById('hlClosureResultNon');r.style.display='block';
+ if(eligible<=0){
+   r.innerHTML='<b>Still Non-Eligible.</b><br>New eligible EMI: '+hlMoney(eligible);
+   setHomeStatusNonEligible();
+   return;
+ }
+ setHomeStatusEligible(eligible);
+ const pf=document.getElementById('hlPreferredEmi');
+ if(pf) pf.value='';
+ validatePreferredEmi();
+ r.innerHTML='<b>You are now eligible.</b><br>New eligible EMI: <strong>'+hlMoney(eligible)+'</strong><br><small>Credit Card obligation is calculated at 5% of outstanding.</small>';
+}
+</script>
+<script>try{document.documentElement.style.scrollBehavior="smooth";}catch(e){}</script>
+
+
+
+</body>
+</html>
