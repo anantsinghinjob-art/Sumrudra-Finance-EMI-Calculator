@@ -6,7 +6,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -23,11 +22,38 @@ jobs:
           mkdir -p app/src/main/java/com/sumrudra/finance/emicalculator
           mkdir -p app/src/main/assets
           mkdir -p app/src/main/res/values
-
+          mkdir -p app/src/main/res/drawable
           cp index.html app/src/main/assets/index.html
           cp MainActivity.java app/src/main/java/com/sumrudra/finance/emicalculator/MainActivity.java
-          cp AndroidManifest.xml app/src/main/AndroidManifest.xml
-
+          cat > app/src/main/res/drawable/ic_launcher.xml <<'ICON'
+          <vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="108dp" android:height="108dp" android:viewportWidth="108" android:viewportHeight="108">
+              <path android:fillColor="#0757C8" android:pathData="M54,4A50,50 0,1 0,54 104A50,50 0,1 0,54 4"/>
+              <path android:fillColor="#FFFFFF" android:pathData="M32,34h44v10H32zM32,49h34v10H32zM32,64h44v10H32z"/>
+              <path android:fillColor="#E5232D" android:pathData="M68,49h8v25h-8z"/>
+          </vector>
+          ICON
+          cat > app/src/main/AndroidManifest.xml <<'MANIFEST'
+          <?xml version="1.0" encoding="utf-8"?>
+          <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+              <application
+                  android:theme="@style/AppTheme"
+                  android:label="Sumrudra Finance EMI Calculator"
+                  android:icon="@drawable/ic_launcher"
+                  android:roundIcon="@drawable/ic_launcher"
+                  android:allowBackup="true"
+                  android:supportsRtl="true">
+                  <activity
+                      android:name=".MainActivity"
+                      android:screenOrientation="portrait"
+                      android:exported="true">
+                      <intent-filter>
+                          <action android:name="android.intent.action.MAIN" />
+                          <category android:name="android.intent.category.LAUNCHER" />
+                      </intent-filter>
+                  </activity>
+              </application>
+          </manifest>
+          MANIFEST
           cat > app/src/main/res/values/styles.xml <<'STYLES'
           <?xml version="1.0" encoding="utf-8"?>
           <resources>
@@ -37,52 +63,31 @@ jobs:
                   <item name="android:navigationBarColor">#07111F</item>
                   <item name="android:statusBarColor">#07111F</item>
                   <item name="android:windowLightStatusBar">false</item>
-              </style>
+          </style>
           </resources>
           STYLES
-
           cat > settings.gradle <<'SETTINGS'
-          pluginManagement {
-              repositories {
-                  google()
-                  mavenCentral()
-                  gradlePluginPortal()
-              }
-          }
-
-          dependencyResolutionManagement {
-              repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-              repositories {
-                  google()
-                  mavenCentral()
-              }
-          }
-
+          pluginManagement { repositories { google(); mavenCentral(); gradlePluginPortal() } }
+          dependencyResolutionManagement { repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS); repositories { google(); mavenCentral() } }
           rootProject.name = 'SumrudraFinance'
           include ':app'
           SETTINGS
-
           cat > build.gradle <<'BUILD'
           plugins {
               id 'com.android.application' version '8.6.1' apply false
           }
           BUILD
-
           cat > app/build.gradle <<'APPBUILD'
-          plugins {
-              id 'com.android.application'
-          }
-
+          plugins { id 'com.android.application' }
           android {
               namespace 'com.sumrudra.finance.emicalculator'
               compileSdk 35
-
               defaultConfig {
                   applicationId 'com.sumrudra.finance.emicalculator'
                   minSdk 23
                   targetSdk 35
-                  versionCode 1
-                  versionName '1.0'
+                  versionCode 2
+                  versionName '2.0'
               }
           }
           APPBUILD
@@ -98,5 +103,5 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Sumrudra-Finance-EMI-Calculator
+          name: Sumrudra-Finance-EMI-Calculator-v2
           path: app/build/outputs/apk/debug/app-debug.apk
